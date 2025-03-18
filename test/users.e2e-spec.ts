@@ -5,9 +5,10 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { faker } from '@faker-js/faker';
 import { userFactory } from './helpers/user-factory';
+import { getUserToken } from './helpers/auth.helper';
 import { resetDatabaseTest } from './config/setup-database';
 
-describe('Auth Controller (e2e)', () => {
+describe('Users Controller (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeAll(() => {
@@ -24,31 +25,17 @@ describe('Auth Controller (e2e)', () => {
     await app.init();
   });
 
-  it('/auth/register (Post) 201', () => {
-    return request(app.getHttpServer())
-      .post('/auth/register')
-      .send({
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        phoneNumber: faker.phone.number(),
-      })
-      .expect(201);
-  });
-
-  it('/auth/login (Post) 200', async () => {
+  it('/users (GET) 200', async () => {
     const password = faker.internet.password();
     const user = await userFactory({
       password,
     });
+    const token = await getUserToken(user.id);
 
-    return request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: user.email,
-        password,
-      })
-      .expect(200);
+    await request(app.getHttpServer())
+      .get('/users')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(200);
   });
 });

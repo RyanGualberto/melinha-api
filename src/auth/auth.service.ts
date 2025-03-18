@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { UsersService } from '../users/users.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -13,12 +14,10 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
-    const payload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload);
 
     return {
       user,
-      accessToken,
+      accessToken: await this.generateToken(user),
     };
   }
 
@@ -37,12 +36,14 @@ export class AuthService {
       return null;
     }
 
-    const payload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload);
-
     return {
       user,
-      accessToken,
+      accessToken: await this.generateToken(user),
     };
+  }
+
+  private async generateToken(user: User) {
+    const payload = { sub: user.id, user };
+    return await this.jwtService.signAsync(payload);
   }
 }
