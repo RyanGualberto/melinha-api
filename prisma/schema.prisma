@@ -8,17 +8,17 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  first_name    String
-  last_name    String
-  email        String    @unique
-  phone_number String    @unique
-  password     String
-  role         String
-  created_at   DateTime
-  updated_at   DateTime
-  addresses    Address[]
-  orders       Order[]
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String    @unique
+  phoneNumber String    @unique
+  password    String
+  role        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  addresses   Address[]
+  orders      Order[]
 }
 
 model Address {
@@ -35,8 +35,8 @@ model Address {
   userId     String
   user       User     @relation(fields: [userId], references: [id])
   status     String
-  created_at DateTime
-  updated_at DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Product {
@@ -49,7 +49,9 @@ model Product {
   category        Category         @relation(fields: [categoryId], references: [id])
   categoryId      String
   productVariants ProductVariant[]
-  OrderItem       OrderItem[]
+  orderItem       OrderItem[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Category {
@@ -57,6 +59,8 @@ model Category {
   name        String
   description String
   products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model ProductVariant {
@@ -69,12 +73,16 @@ model ProductVariant {
   ProductVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id])
   productVariantCategoryId String?
   OrderItem                OrderItem[]
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
 }
 
 model ProductVariantCategory {
   id              String           @id @default(uuid())
   name            String
   productVariants ProductVariant[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Order {
@@ -84,9 +92,9 @@ model Order {
   items         OrderItem[]
   status        String
   total         Float
+  paymentMethod String // Ex: "Cartão", "Dinheiro", "Pix"
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  paymentMethod String // Ex: "Cartão", "Dinheiro", "Pix"
 }
 
 model OrderItem {
@@ -99,4 +107,6 @@ model OrderItem {
   variant   ProductVariant? @relation(fields: [variantId], references: [id])
   quantity  Int
   price     Float
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }
