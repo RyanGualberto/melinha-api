@@ -77,6 +77,7 @@ model ProductVariant {
   price                    Float
   status                   String
   productId                String
+  image                    String
   product                  Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
   ProductVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id], onDelete: Cascade)
   productVariantCategoryId String?

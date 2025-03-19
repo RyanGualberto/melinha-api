@@ -1,4 +1,4 @@
-import { ICategory } from 'src/categories/categories.type';
+import { ICategory } from '../categories/categories.type';
 
 export interface IProduct {
   title: string;

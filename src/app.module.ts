@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ProductVariantsModule } from './product-variants/product-variants.module';
+import { ProductVariantCategoriesModule } from './product-variant-categories/product-variant-categories.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { CategoriesModule } from './categories/categories.module';
     UsersModule,
     ProductsModule,
     CategoriesModule,
+    ProductVariantsModule,
+    ProductVariantCategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
