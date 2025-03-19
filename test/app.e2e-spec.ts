@@ -10,7 +10,7 @@ describe('AppController (e2e)', () => {
 
   beforeAll(() => {
     resetDatabaseTest();
-    console.log('reset database');
+    
   });
 
   beforeEach(async () => {

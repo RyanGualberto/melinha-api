@@ -19,6 +19,8 @@ model User {
   updatedAt   DateTime  @updatedAt
   addresses   Address[]
   orders      Order[]
+
+  @@map("users")
 }
 
 model Address {
@@ -37,6 +39,8 @@ model Address {
   status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@map("addresses")
 }
 
 model Product {
@@ -46,21 +50,25 @@ model Product {
   price           Float
   status          String
   image           String
-  category        Category         @relation(fields: [categoryId], references: [id])
+  category        Category?        @relation(fields: [categoryId], references: [id])
   categoryId      String
   productVariants ProductVariant[]
   orderItem       OrderItem[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+
+  @@map("products")
 }
 
 model Category {
   id          String    @id @default(uuid())
   name        String
-  description String
+  description String?
   products    Product[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
 }
 
 model ProductVariant {
@@ -75,6 +83,8 @@ model ProductVariant {
   OrderItem                OrderItem[]
   createdAt                DateTime                @default(now())
   updatedAt                DateTime                @updatedAt
+
+  @@map("product_variants")
 }
 
 model ProductVariantCategory {
@@ -83,6 +93,8 @@ model ProductVariantCategory {
   productVariants ProductVariant[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+
+  @@map("product_variant_categories")
 }
 
 model Order {
@@ -95,6 +107,8 @@ model Order {
   paymentMethod String // Ex: "Cartão", "Dinheiro", "Pix"
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  @@map("orders")
 }
 
 model OrderItem {
@@ -109,4 +123,6 @@ model OrderItem {
   price     Float
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+
+  @@map("order_items")
 }

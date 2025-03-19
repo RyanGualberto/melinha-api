@@ -44,6 +44,9 @@ export class AuthService {
 
   private async generateToken(user: User) {
     const payload = { sub: user.id, user };
-    return await this.jwtService.signAsync(payload);
+    return await this.jwtService.signAsync(payload, {
+      privateKey: String(process.env.JWT_SECRET),
+      expiresIn: '1d',
+    });
   }
 }

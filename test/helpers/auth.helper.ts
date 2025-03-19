@@ -1,10 +1,18 @@
+import { prisma } from './prisma.client';
 import { userFactory } from './user-factory';
 import jwt from 'jsonwebtoken';
 
 export async function getUserToken(userId?: string): Promise<string> {
   if (userId) {
-    return jwt.sign({ id: userId }, String(process.env.JWT_SECRET));
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    return jwt.sign({ sub: userId, user }, String(process.env.JWT_SECRET), {
+      expiresIn: '1d',
+    });
   }
-  const id = await userFactory({}).then((user) => user.id);
-  return jwt.sign({ id }, String(process.env.JWT_SECRET));
+  const user = await userFactory({});
+  return jwt.sign({ sub: user.id, user }, String(process.env.JWT_SECRET));
 }

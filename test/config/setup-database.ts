@@ -1,13 +1,13 @@
 import { exec, ExecException } from 'child_process';
 
-const database = 'melinha_test';
+const database = 'melinha_test_api';
 const databaseUser = 'ryangualberto';
 const databasePassword = '044825';
 const databaseHost = 'localhost';
 const databasePort = '5432';
 const databaseUrl = `postgresql://${databaseUser}:${databasePassword}@${databaseHost}:${databasePort}/${database}`;
 
-const resetDatabaseTestCommand = `DATABASE_URL="${databaseUrl}" npx prisma migrate reset --force`;
+const resetDatabaseTestCommand = `DATABASE_URL="${databaseUrl}" npx prisma migrate dev`;
 
 export const logExec = (
   error: ExecException,

@@ -6,15 +6,11 @@ import { AppModule } from '../src/app.module';
 import { faker } from '@faker-js/faker';
 import { userFactory } from './helpers/user-factory';
 import { getUserToken } from './helpers/auth.helper';
-import { resetDatabaseTest } from './config/setup-database';
+import { cleanDb } from './helpers/clean-database';
+import { prisma } from './helpers/prisma.client';
 
 describe('Users Controller (e2e)', () => {
   let app: INestApplication<App>;
-
-  beforeAll(() => {
-    resetDatabaseTest();
-    console.log('reset database');
-  });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,6 +18,8 @@ describe('Users Controller (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    await cleanDb();
+    
     await app.init();
   });
 
@@ -51,5 +49,10 @@ describe('Users Controller (e2e)', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(200);
+  });
+
+  afterAll(async () => {
+    await app.close();
+    await prisma.$disconnect();
   });
 });

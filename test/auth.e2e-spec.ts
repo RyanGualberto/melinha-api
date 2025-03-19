@@ -5,15 +5,11 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { faker } from '@faker-js/faker';
 import { userFactory } from './helpers/user-factory';
-import { resetDatabaseTest } from './config/setup-database';
+import { cleanDb } from './helpers/clean-database';
+import { prisma } from './helpers/prisma.client';
 
 describe('Auth Controller (e2e)', () => {
   let app: INestApplication<App>;
-
-  beforeAll(() => {
-    resetDatabaseTest();
-    console.log('reset database');
-  });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,6 +17,8 @@ describe('Auth Controller (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    await cleanDb();
+    
     await app.init();
   });
 
@@ -50,5 +48,10 @@ describe('Auth Controller (e2e)', () => {
         password,
       })
       .expect(200);
+  });
+
+  afterAll(async () => {
+    await app.close();
+    await prisma.$disconnect();
   });
 });
