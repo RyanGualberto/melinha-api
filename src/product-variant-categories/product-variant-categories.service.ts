@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductVariantCategoryDto } from './dto/create-product-variant-category.dto';
 import { UpdateProductVariantCategoryDto } from './dto/update-product-variant-category.dto';
+import { PrismaService } from '../config/prisma-service';
 
 @Injectable()
 export class ProductVariantCategoriesService {
-  create(createProductVariantCategoryDto: CreateProductVariantCategoryDto) {
-    return 'This action adds a new productVariantCategory';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(
+    createProductVariantCategoryDto: CreateProductVariantCategoryDto,
+  ) {
+    return await this.prismaService.productVariantCategory.create({
+      data: createProductVariantCategoryDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all productVariantCategories`;
+  async findAll() {
+    return await this.prismaService.productVariantCategory.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} productVariantCategory`;
+  async findOne(id: string) {
+    return await this.prismaService.productVariantCategory.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateProductVariantCategoryDto: UpdateProductVariantCategoryDto) {
-    return `This action updates a #${id} productVariantCategory`;
+  async update(
+    id: string,
+    updateProductVariantCategoryDto: UpdateProductVariantCategoryDto,
+  ) {
+    await this.prismaService.productVariantCategory.update({
+      where: { id },
+      data: updateProductVariantCategoryDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} productVariantCategory`;
+  async remove(id: string) {
+    return await this.prismaService.productVariantCategory.delete({
+      where: { id },
+    });
   }
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { ProductVariantCategoriesService } from './product-variant-categories.service';
 import { CreateProductVariantCategoryDto } from './dto/create-product-variant-category.dto';
@@ -21,39 +22,44 @@ export class ProductVariantCategoriesController {
 
   @UseGuards(AdminGuard)
   @Post()
-  create(
+  @HttpCode(201)
+  async create(
     @Body() createProductVariantCategoryDto: CreateProductVariantCategoryDto,
   ) {
-    return this.productVariantCategoriesService.create(
+    return await this.productVariantCategoriesService.create(
       createProductVariantCategoryDto,
     );
   }
 
   @Get()
-  findAll() {
-    return this.productVariantCategoriesService.findAll();
+  @HttpCode(200)
+  async findAll() {
+    return await this.productVariantCategoriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productVariantCategoriesService.findOne(+id);
+  @HttpCode(200)
+  async findOne(@Param('id') id: string) {
+    return await this.productVariantCategoriesService.findOne(id);
   }
 
   @UseGuards(AdminGuard)
   @Patch(':id')
-  update(
+  @HttpCode(200)
+  async update(
     @Param('id') id: string,
     @Body() updateProductVariantCategoryDto: UpdateProductVariantCategoryDto,
   ) {
-    return this.productVariantCategoriesService.update(
-      +id,
+    return await this.productVariantCategoriesService.update(
+      id,
       updateProductVariantCategoryDto,
     );
   }
 
   @UseGuards(AdminGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productVariantCategoriesService.remove(+id);
+  @HttpCode(204)
+  async remove(@Param('id') id: string) {
+    return await this.productVariantCategoriesService.remove(id);
   }
 }

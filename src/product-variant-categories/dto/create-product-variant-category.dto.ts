@@ -1,1 +1,3 @@
-export class CreateProductVariantCategoryDto {}
+export class CreateProductVariantCategoryDto {
+  name: string;
+}

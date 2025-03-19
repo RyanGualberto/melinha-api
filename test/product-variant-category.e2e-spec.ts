@@ -5,13 +5,12 @@ import { AppModule } from '../src/app.module';
 import { cleanDb } from './helpers/clean-database';
 import { getUserToken } from './helpers/auth.helper';
 import { userFactory } from './helpers/factories/user-factory';
-import { productVariantFactory } from './helpers/factories/product-variant-factory';
-import { productFactory } from './helpers/factories/product-factory';
+import { productVariantCategoryFactory } from './helpers/factories/product-variant-category-factory';
 import { faker } from '@faker-js/faker';
 import { prisma } from './config/prisma.client';
 import { App } from 'supertest/types';
 
-describe('ProductVariantsController (e2e)', () => {
+describe('ProductVariantCaetegoriesController (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
@@ -24,85 +23,73 @@ describe('ProductVariantsController (e2e)', () => {
     await app.init();
   });
 
-  it('/product-variants (GET) - Deve retornar lista vazia inicialmente', async () => {
+  it('/product-variant-categories (GET) - Deve retornar lista vazia inicialmente', async () => {
     const response = await request(app.getHttpServer()).get(
-      '/product-variants',
+      '/product-variant-categories',
     );
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([]);
   });
 
-  it('/product-variants (POST) - Deve criar uma variante de produto com admin', async () => {
+  it('/product-variant-categories (POST) - Deve criar uma categoria de variante de produto com admin', async () => {
     const user = await userFactory({ role: 'admin' });
     const token = await getUserToken(user.id);
-    const product = await productFactory();
 
     const variantData = {
       name: faker.commerce.productName(),
-      price: faker.number.float({ min: 10, max: 100 }),
-      status: 'active',
-      productId: product.id,
-      image: faker.image.url(),
     };
 
     const response = await request(app.getHttpServer())
-      .post('/product-variants')
+      .post('/product-variant-categories')
       .send(variantData)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(201);
   });
 
-  it('/product-variants (POST) - Deve falhar ao criar sem autenticação', async () => {
-    const product = await productFactory();
-
+  it('/product-variant-categories (POST) - Deve falhar ao criar sem autenticação', async () => {
     const response = await request(app.getHttpServer())
-      .post('/product-variants')
+      .post('/product-variant-categories')
       .send({
         name: faker.commerce.productName(),
-        price: faker.number.float({ min: 10, max: 100 }),
-        status: 'active',
-        productId: product.id,
-        image: faker.image.url(),
       });
 
     expect(response.status).toBe(401);
   });
 
-  it('/product-variants/:id (GET) - Deve buscar uma variante pelo ID', async () => {
-    const variant = await productVariantFactory();
+  it('/product-variant-categories/:id (GET) - Deve buscar uma categoria de variante pelo ID', async () => {
+    const productVariantCategory = await productVariantCategoryFactory({});
 
     const response = await request(app.getHttpServer()).get(
-      `/product-variants/${variant.id}`,
+      `/product-variant-categories/${productVariantCategory.id}`,
     );
 
     expect(response.status).toBe(200);
   });
 
-  it('/product-variants/:id (PATCH) - Deve atualizar uma variante com admin', async () => {
-    const variant = await productVariantFactory();
+  it('/product-variant-categories/:id (PATCH) - Deve atualizar uma categoria de variante com admin', async () => {
+    const productVariantCategory = await productVariantCategoryFactory({});
     const user = await userFactory({ role: 'admin' });
     const token = await getUserToken(user.id);
 
     const updatedData = {
       name: 'Nova Variante',
-      price: 199.99,
     };
 
     const response = await request(app.getHttpServer())
-      .patch(`/product-variants/${variant.id}`)
+      .patch(`/product-variant-categories/${productVariantCategory.id}`)
       .send(updatedData)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
   });
 
-  it('/product-variants/:id (PATCH) - Deve falhar ao atualizar sem autenticação', async () => {
-    const variant = await productVariantFactory();
+  it('/product-variant-categories/:id (PATCH) - Deve falhar ao atualizar sem autenticação', async () => {
+    const productVariantCategory = await productVariantCategoryFactory({});
 
     const response = await request(app.getHttpServer())
-      .patch(`/product-variants/${variant.id}`)
+      .patch(`/product-variant-categories/${productVariantCategory.id}`)
       .send({
         name: 'Variante Atualizada',
       });
@@ -110,23 +97,23 @@ describe('ProductVariantsController (e2e)', () => {
     expect(response.status).toBe(401);
   });
 
-  it('/product-variants/:id (DELETE) - Deve deletar uma variante com admin', async () => {
-    const variant = await productVariantFactory();
+  it('/product-variant-categories/:id (DELETE) - Deve deletar uma categoria de variante com admin', async () => {
+    const variant = await productVariantCategoryFactory({});
     const user = await userFactory({ role: 'admin' });
     const token = await getUserToken(user.id);
 
     const response = await request(app.getHttpServer())
-      .delete(`/product-variants/${variant.id}`)
+      .delete(`/product-variant-categories/${variant.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(204);
   });
 
-  it('/product-variants/:id (DELETE) - Deve falhar ao deletar sem autenticação', async () => {
-    const variant = await productVariantFactory();
+  it('/product-variant-categories/:id (DELETE) - Deve falhar ao deletar sem autenticação', async () => {
+    const variant = await productVariantCategoryFactory();
 
     const response = await request(app.getHttpServer()).delete(
-      `/product-variants/${variant.id}`,
+      `/product-variant-categories/${variant.id}`,
     );
 
     expect(response.status).toBe(401);

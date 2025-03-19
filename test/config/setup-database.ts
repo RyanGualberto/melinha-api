@@ -9,20 +9,16 @@ const databaseUrl = `postgresql://${databaseUser}:${databasePassword}@${database
 
 const resetDatabaseTestCommand = `DATABASE_URL="${databaseUrl}" npx prisma migrate dev`;
 
-export const logExec = (
-  error: ExecException,
-  stdout: string,
-  stderr: string,
-) => {
+export const logExec = (error: ExecException) => {
   if (error) {
     console.error(`ERROR RUNNING MIGRATION: ${error.message}`);
     return;
   }
 
-  if (stderr) {
-    console.error(`stderr: ${stderr}`);
-    return;
-  }
+  // if (stderr) {
+  //   console.error(`stderr: ${stderr}`);
+  //   return;
+  // }
 
   console.log('Database Migrated');
 };
