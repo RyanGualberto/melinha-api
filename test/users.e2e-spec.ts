@@ -38,4 +38,18 @@ describe('Users Controller (e2e)', () => {
 
     expect(200);
   });
+
+  it('/users/:id (GET) 200', async () => {
+    const password = faker.internet.password();
+    const user = await userFactory({
+      password,
+    });
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .get('/users/' + user.id)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(200);
+  });
 });
