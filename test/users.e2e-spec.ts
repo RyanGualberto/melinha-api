@@ -4,10 +4,10 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { faker } from '@faker-js/faker';
-import { userFactory } from './helpers/user-factory';
+import { userFactory } from './helpers/factories/user-factory';
 import { getUserToken } from './helpers/auth.helper';
 import { cleanDb } from './helpers/clean-database';
-import { prisma } from './helpers/prisma.client';
+import { prisma } from './config/prisma.client';
 
 describe('Users Controller (e2e)', () => {
   let app: INestApplication<App>;

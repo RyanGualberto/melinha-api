@@ -1,5 +1,5 @@
-import { prisma } from './prisma.client';
-import { userFactory } from './user-factory';
+import { prisma } from '../config/prisma.client';
+import { userFactory } from './factories/user-factory';
 import jwt from 'jsonwebtoken';
 
 export async function getUserToken(userId?: string): Promise<string> {

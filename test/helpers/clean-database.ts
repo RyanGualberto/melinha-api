@@ -1,4 +1,4 @@
-import { prisma } from './prisma.client';
+import { prisma } from '../config/prisma.client';
 
 export async function cleanDb() {
   await prisma.category.deleteMany();
