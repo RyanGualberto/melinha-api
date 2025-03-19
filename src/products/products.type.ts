@@ -6,7 +6,7 @@ export interface IProduct {
   price: number;
   status: string;
   image: string;
-  category: ICategory;
+  category?: ICategory;
   // productVariants ProductVariant[]
   // orderItem       OrderItem[]
   createdAt: Date;

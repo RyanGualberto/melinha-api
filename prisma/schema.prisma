@@ -35,7 +35,7 @@ model Address {
   country    String
   name       String
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -50,7 +50,7 @@ model Product {
   price           Float
   status          String
   image           String
-  category        Category?        @relation(fields: [categoryId], references: [id])
+  category        Category?        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId      String
   productVariants ProductVariant[]
   orderItem       OrderItem[]
@@ -77,8 +77,8 @@ model ProductVariant {
   price                    Float
   status                   String
   productId                String
-  product                  Product                 @relation(fields: [productId], references: [id])
-  ProductVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id])
+  product                  Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ProductVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id], onDelete: Cascade)
   productVariantCategoryId String?
   OrderItem                OrderItem[]
   createdAt                DateTime                @default(now())
@@ -100,7 +100,7 @@ model ProductVariantCategory {
 model Order {
   id            String      @id @default(uuid())
   userId        String
-  user          User        @relation(fields: [userId], references: [id])
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items         OrderItem[]
   status        String
   total         Float
@@ -114,11 +114,11 @@ model Order {
 model OrderItem {
   id        String          @id @default(uuid())
   orderId   String
-  order     Order           @relation(fields: [orderId], references: [id])
+  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
-  product   Product         @relation(fields: [productId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
   variantId String?
-  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
   quantity  Int
   price     Float
   createdAt DateTime        @default(now())

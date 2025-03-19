@@ -22,8 +22,8 @@ describe('Auth Controller (e2e)', () => {
     await app.init();
   });
 
-  it('/auth/register (Post) 201', () => {
-    return request(app.getHttpServer())
+  it('/auth/register (Post) 201', async () => {
+    const response = await request(app.getHttpServer())
       .post('/auth/register')
       .send({
         email: faker.internet.email(),
@@ -31,8 +31,10 @@ describe('Auth Controller (e2e)', () => {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         phoneNumber: faker.phone.number(),
-      })
-      .expect(201);
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('accessToken');
   });
 
   it('/auth/login (Post) 200', async () => {
@@ -41,13 +43,15 @@ describe('Auth Controller (e2e)', () => {
       password,
     });
 
-    return request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({
         email: user.email,
         password,
-      })
-      .expect(200);
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('accessToken');
   });
 
   afterEach(async () => {

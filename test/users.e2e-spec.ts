@@ -131,7 +131,7 @@ describe('Users Controller (e2e)', () => {
     expect(401);
   });
 
-  it('/users/:id (DELETE) 200', async () => {
+  it('/users/:id (DELETE) 204', async () => {
     const user = await userFactory({
       role: 'admin',
     });
@@ -142,7 +142,7 @@ describe('Users Controller (e2e)', () => {
       .delete('/users/' + user2.id)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(200);
+    expect(204);
   });
 
   it('/users/:id (DELETE) with token of role user', async () => {

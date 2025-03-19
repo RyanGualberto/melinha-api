@@ -121,7 +121,7 @@ describe('CategoriesController (e2e)', () => {
       .delete(`/categories/${category.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(204);
   });
 
   it('/categories/:id (DELETE) with token of role user', async () => {

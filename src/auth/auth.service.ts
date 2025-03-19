@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -24,7 +24,7 @@ export class AuthService {
   async login(loginAuthDto: LoginAuthDto) {
     const user = await this.usersService.findByEmail(loginAuthDto.email);
     if (!user) {
-      return null;
+      throw new BadRequestException('Invalid credentials');
     }
 
     const isPasswordMatch = await this.usersService.comparePassword(
@@ -33,7 +33,7 @@ export class AuthService {
     );
 
     if (!isPasswordMatch) {
-      return null;
+      throw new BadRequestException('Invalid credentials');
     }
 
     return {
