@@ -19,14 +19,13 @@ describe('Users Controller (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await cleanDb();
-    
+
     await app.init();
   });
 
   it('/users (GET) 200', async () => {
-    const password = faker.internet.password();
     const user = await userFactory({
-      password,
+      role: 'admin',
     });
     const token = await getUserToken(user.id);
 
@@ -37,10 +36,26 @@ describe('Users Controller (e2e)', () => {
     expect(200);
   });
 
+  it('/users (GET) with token of role user', async () => {
+    const user = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .get('/users')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(401);
+  });
+
+  it('/users (GET) without token', async () => {
+    await request(app.getHttpServer()).get('/users');
+
+    expect(401);
+  });
+
   it('/users/:id (GET) 200', async () => {
-    const password = faker.internet.password();
     const user = await userFactory({
-      password,
+      role: 'admin',
     });
     const token = await getUserToken(user.id);
 
@@ -51,7 +66,106 @@ describe('Users Controller (e2e)', () => {
     expect(200);
   });
 
-  afterAll(async () => {
+  it('/users/:id (GET) with token of role user', async () => {
+    const user = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .get('/users/' + user.id)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(401);
+  });
+
+  it('/users/:id (GET) without token', async () => {
+    const user = await userFactory({
+      role: 'admin',
+    });
+
+    await request(app.getHttpServer()).get('/users/' + user.id);
+
+    expect(401);
+  });
+
+  it('/users/:id (PATCH) 200', async () => {
+    const user = await userFactory({
+      role: 'admin',
+    });
+    const user2 = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .patch('/users/' + user2.id)
+      .send({
+        firstName: faker.person.fullName(),
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(200);
+  });
+
+  it('/users/:id (PATCH) with token of role user', async () => {
+    const user = await userFactory({});
+    const user2 = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .patch('/users/' + user2.id)
+      .send({
+        firstName: faker.person.fullName(),
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(401);
+  });
+
+  it('/users/:id (PATCH) without token', async () => {
+    const user2 = await userFactory({});
+
+    await request(app.getHttpServer())
+      .patch('/users/' + user2.id)
+      .send({
+        firstName: faker.person.fullName(),
+      });
+
+    expect(401);
+  });
+
+  it('/users/:id (DELETE) 200', async () => {
+    const user = await userFactory({
+      role: 'admin',
+    });
+    const user2 = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .delete('/users/' + user2.id)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(200);
+  });
+
+  it('/users/:id (DELETE) with token of role user', async () => {
+    const user = await userFactory({});
+    const user2 = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    await request(app.getHttpServer())
+      .delete('/users/' + user2.id)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(401);
+  });
+
+  it('/users/:id (DELETE) without token', async () => {
+    const user2 = await userFactory({});
+
+    await request(app.getHttpServer()).delete('/users/' + user2.id);
+
+    expect(401);
+  });
+
+  afterEach(async () => {
     await app.close();
     await prisma.$disconnect();
   });

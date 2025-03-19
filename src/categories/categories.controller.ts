@@ -11,13 +11,13 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/auth.guard';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     return await this.categoriesService.create(createCategoryDto);
@@ -33,7 +33,7 @@ export class CategoriesController {
     return await this.categoriesService.findOne(id);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -42,7 +42,7 @@ export class CategoriesController {
     return await this.categoriesService.update(id, updateCategoryDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.categoriesService.remove(id);

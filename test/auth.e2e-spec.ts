@@ -18,7 +18,7 @@ describe('Auth Controller (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await cleanDb();
-    
+
     await app.init();
   });
 
@@ -50,7 +50,7 @@ describe('Auth Controller (e2e)', () => {
       .expect(200);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await app.close();
     await prisma.$disconnect();
   });

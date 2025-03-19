@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { faker } from '@faker-js/faker';
 import { userFactory } from './helpers/factories/user-factory';
 import { getUserToken } from './helpers/auth.helper';
 import { categoryFactory } from './helpers/factories/category-factory';
@@ -32,7 +31,7 @@ describe('CategoriesController (e2e)', () => {
   });
 
   it('/categories (POST)', async () => {
-    const user = await userFactory({});
+    const user = await userFactory({ role: 'admin' });
     const token = await getUserToken(user.id);
 
     const response = await request(app.getHttpServer())
@@ -41,6 +40,18 @@ describe('CategoriesController (e2e)', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(201);
+  });
+
+  it('/categories (POST) with token of role user', async () => {
+    const user = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    const response = await request(app.getHttpServer())
+      .post('/categories')
+      .send({ name: 'Category 1' })
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
   });
 
   it('/categories (POST) without token', async () => {
@@ -63,9 +74,8 @@ describe('CategoriesController (e2e)', () => {
 
   it('/categories/:id (PATCH)', async () => {
     const category = await categoryFactory({ name: 'Category 1' });
-    const password = faker.internet.password();
     const user = await userFactory({
-      password,
+      role: 'admin',
     });
     const token = await getUserToken(user.id);
 
@@ -75,6 +85,19 @@ describe('CategoriesController (e2e)', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
+  });
+
+  it('/categories/:id (PATCH) with token of role user', async () => {
+    const category = await categoryFactory({ name: 'Category 1' });
+    const user = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    const response = await request(app.getHttpServer())
+      .patch(`/categories/${category.id}`)
+      .send({ name: 'Category 2' })
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
   });
 
   it('/categories/:id (PATCH) without token', async () => {
@@ -89,9 +112,8 @@ describe('CategoriesController (e2e)', () => {
 
   it('/categories/:id (DELETE)', async () => {
     const category = await categoryFactory({ name: 'Category 1' });
-    const password = faker.internet.password();
     const user = await userFactory({
-      password,
+      role: 'admin',
     });
     const token = await getUserToken(user.id);
 
@@ -100,6 +122,18 @@ describe('CategoriesController (e2e)', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
+  });
+
+  it('/categories/:id (DELETE) with token of role user', async () => {
+    const category = await categoryFactory({ name: 'Category 1' });
+    const user = await userFactory({});
+    const token = await getUserToken(user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/categories/${category.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
   });
 
   it('/categories/:id (DELETE) without token', async () => {
@@ -112,7 +146,7 @@ describe('CategoriesController (e2e)', () => {
     expect(response.status).toBe(401);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await app.close();
     await prisma.$disconnect();
   });

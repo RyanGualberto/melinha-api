@@ -18,8 +18,13 @@ export const logExec = (
     console.error(`ERROR RUNNING MIGRATION: ${error.message}`);
     return;
   }
-  console.log(`stdout: ${stdout}`);
-  console.error(`stderr: ${stderr}`);
+
+  if (stderr) {
+    console.error(`stderr: ${stderr}`);
+    return;
+  }
+
+  console.log('Database Migrated');
 };
 
 export function resetDatabaseTest() {
