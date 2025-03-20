@@ -4,5 +4,5 @@ export class CreateProductDto {
   price: number;
   status: string;
   image: string;
-  categoryId?: string;
+  categoryId: string;
 }

@@ -3,5 +3,6 @@ export class CreateProductVariantDto {
   price: number;
   status: string;
   productId: string;
+  productVariantCategoryId: string;
   image: string;
 }

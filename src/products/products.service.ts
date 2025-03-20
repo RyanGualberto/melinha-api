@@ -7,16 +7,15 @@ import { PrismaService } from '../config/prisma-service';
 export class ProductsService {
   constructor(private prismaService: PrismaService) {}
   async create(createProductDto: CreateProductDto) {
-    return this.prismaService.product.create({
+    return await this.prismaService.product.create({
       data: {
         ...createProductDto,
-        categoryId: createProductDto.categoryId,
       },
     });
   }
 
   async findAll() {
-    return this.prismaService.product.findMany({
+    return await this.prismaService.product.findMany({
       include: {
         category: true,
       },
@@ -24,7 +23,7 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    return this.prismaService.product.findUnique({
+    return await this.prismaService.product.findUnique({
       where: {
         id,
       },
@@ -35,7 +34,7 @@ export class ProductsService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    return this.prismaService.product.update({
+    return await this.prismaService.product.update({
       where: {
         id,
       },
@@ -46,7 +45,7 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    return this.prismaService.product.delete({
+    return await this.prismaService.product.delete({
       where: {
         id,
       },

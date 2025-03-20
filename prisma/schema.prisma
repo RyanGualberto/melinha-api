@@ -79,9 +79,9 @@ model ProductVariant {
   productId                String
   image                    String
   product                  Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
-  ProductVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id], onDelete: Cascade)
+  productVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id], onDelete: Cascade)
   productVariantCategoryId String?
-  OrderItem                OrderItem[]
+  orderItem                OrderItem[]
   createdAt                DateTime                @default(now())
   updatedAt                DateTime                @updatedAt
 
@@ -126,4 +126,16 @@ model OrderItem {
   updatedAt DateTime        @updatedAt
 
   @@map("order_items")
+}
+
+model StoreSettings {
+  id        String @id @default(uuid())
+  instagram String
+  whatsapp  String
+  email     String
+
+  createdAt String
+  updatedAt String
+
+  @@map("store_settings")
 }

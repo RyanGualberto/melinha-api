@@ -4,12 +4,14 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
+import { PrismaService } from 'src/config/prisma-service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private prismaService: PrismaService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
@@ -44,7 +46,8 @@ export class AuthService {
 
   async me(id: string) {
     const user = await this.usersService.findOne(id);
-    return user;
+    const settings = await this.prismaService.storeSettings.findFirst();
+    return { ...user, settings };
   }
 
   private async generateToken(user: User) {

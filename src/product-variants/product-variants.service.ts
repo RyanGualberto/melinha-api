@@ -17,6 +17,7 @@ export class ProductVariantsService {
     return await this.prismaService.productVariant.findMany({
       include: {
         product: true,
+        productVariantCategory: true,
       },
     });
   }
@@ -28,6 +29,7 @@ export class ProductVariantsService {
       },
       include: {
         product: true,
+        productVariantCategory: true,
       },
     });
   }

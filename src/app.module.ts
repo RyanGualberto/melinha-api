@@ -8,6 +8,8 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductVariantsModule } from './product-variants/product-variants.module';
 import { ProductVariantCategoriesModule } from './product-variant-categories/product-variant-categories.module';
+import { MenuModule } from './menu/menu.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ProductVariantCategoriesModule } from './product-variant-categories/pro
     CategoriesModule,
     ProductVariantsModule,
     ProductVariantCategoriesModule,
+    MenuModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
