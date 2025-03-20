@@ -42,6 +42,11 @@ export class AuthService {
     };
   }
 
+  async me(id: string) {
+    const user = await this.usersService.findOne(id);
+    return user;
+  }
+
   private async generateToken(user: User) {
     const payload = { sub: user.id, user };
     return await this.jwtService.signAsync(payload, {

@@ -30,7 +30,10 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException();
       }
 
-      request['user'] = payload.user;
+      request['user'] = {
+        ...payload.user,
+        role: payload.user.role as 'admin' | 'user',
+      };
     } catch {
       throw new UnauthorizedException();
     }
@@ -65,7 +68,10 @@ export class AdminGuard implements CanActivate {
         throw new UnauthorizedException();
       }
 
-      request['user'] = payload.user;
+      request['user'] = {
+        ...payload.user,
+        role: payload.user.role as 'admin' | 'user',
+      };
     } catch {
       throw new UnauthorizedException();
     }

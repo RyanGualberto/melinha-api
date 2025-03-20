@@ -1,8 +1,16 @@
-import { User } from '@prisma/client';
-
 declare namespace Express {
   export interface Request {
-    user?: User;
+    user?: {
+      id: string;
+      role: 'admin' | 'user';
+      firstName: string;
+      lastName: string;
+      email: string;
+      phoneNumber: string;
+      password: string | undefined;
+      createdAt: Date;
+      updatedAt: Date;
+    };
   }
 
   export interface Response {

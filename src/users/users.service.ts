@@ -16,7 +16,10 @@ export class UsersService {
 
     const record = await this.prisma.user.create({
       data: {
-        ...data,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
         password: hashed_password,
         role: 'user',
       },
