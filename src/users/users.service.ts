@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { OrderStatus, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,7 +33,7 @@ export class UsersService {
     const users = await this.prisma.user.findMany({
       include: {
         orders: {
-          where: { status: 'completed' },
+          where: { status: OrderStatus.COMPLETED },
           select: { createdAt: true },
         },
       },

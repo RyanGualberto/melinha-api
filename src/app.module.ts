@@ -11,6 +11,7 @@ import { ProductVariantCategoriesModule } from './product-variant-categories/pro
 import { MenuModule } from './menu/menu.module';
 import { SettingsModule } from './settings/settings.module';
 import { AddressModule } from './address/address.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AddressModule } from './address/address.module';
     MenuModule,
     SettingsModule,
     AddressModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ProductStatus } from '@prisma/client';
 import { PrismaService } from 'src/config/prisma-service';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class MenuService {
         products: {
           where: {
             status: {
-              not: 'inactive',
+              not: ProductStatus.INACTIVE,
             },
             title: { contains: query, mode: 'insensitive' },
           },
@@ -19,7 +20,7 @@ export class MenuService {
             productVariants: {
               where: {
                 status: {
-                  not: 'inactive',
+                  not: ProductStatus.INACTIVE,
                 },
               },
               include: {

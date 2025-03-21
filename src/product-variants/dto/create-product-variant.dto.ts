@@ -1,7 +1,9 @@
+import { ProductVariantStatus } from '@prisma/client';
+
 export class CreateProductVariantDto {
   name: string;
   price: number;
-  status: string;
+  status: ProductVariantStatus;
   productId: string;
   productVariantCategoryId: string;
   image: string;

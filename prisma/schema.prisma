@@ -40,6 +40,7 @@ model Address {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  Order      Order[]
 
   @@map("addresses")
 }
@@ -49,12 +50,12 @@ model Product {
   title           String
   description     String
   price           Float
-  status          String
+  status          ProductStatus
   image           String
   category        Category?        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId      String
   productVariants ProductVariant[]
-  orderItem       OrderItem[]
+  orderProduct    OrderProduct[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -76,13 +77,13 @@ model ProductVariant {
   id                       String                  @id @default(uuid())
   name                     String
   price                    Float
-  status                   String
+  status                   ProductVariantStatus
   productId                String
   image                    String
   product                  Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
   productVariantCategory   ProductVariantCategory? @relation(fields: [productVariantCategoryId], references: [id], onDelete: Cascade)
   productVariantCategoryId String?
-  orderItem                OrderItem[]
+  orderProduct             OrderProduct[]
   createdAt                DateTime                @default(now())
   updatedAt                DateTime                @updatedAt
 
@@ -100,33 +101,63 @@ model ProductVariantCategory {
 }
 
 model Order {
-  id            String      @id @default(uuid())
-  userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items         OrderItem[]
-  status        String
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  addressId String?
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+  addressSnapshot Json
+  userSnapshot    Json
+
+  products      OrderProduct[]
+  status        OrderStatus    @default(PENDING)
   total         Float
-  paymentMethod String // Ex: "Cartão", "Dinheiro", "Pix"
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  discount      Float?
+  deliveryCost  Float
+  paymentMethod String
+  paymentChange Float?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("orders")
 }
 
-model OrderItem {
-  id        String          @id @default(uuid())
+model OrderProduct {
+  id        String  @id @default(uuid())
   orderId   String
-  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
-  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
-  variantId String?
-  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  quantity  Int
-  price     Float
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@map("order_items")
+  productTitleSnapshot String
+  productPriceSnapshot Float
+
+  quantity Int
+  price    Float
+  variants OrderProductVariant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+  productVariantId String?
+
+  @@map("order_products")
+}
+
+model OrderProductVariant {
+  id             String       @id @default(uuid())
+  orderProductId String
+  orderProduct   OrderProduct @relation(fields: [orderProductId], references: [id], onDelete: Cascade)
+
+  variantName  String
+  variantPrice Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("order_product_variants")
 }
 
 model StoreSettings {
@@ -135,8 +166,28 @@ model StoreSettings {
   whatsapp  String
   email     String
 
-  createdAt String
-  updatedAt String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("store_settings")
+}
+
+enum OrderStatus {
+  PENDING // Pedido recebido, mas não processado
+  IN_PROGRESS // Pedido em preparação
+  DELIVERY_IN_PROGRESS // Pedido a caminho
+  COMPLETED // Pedido finalizado e entregue
+  CANCELED // Pedido cancelado
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  SHORTLY
+}
+
+enum ProductVariantStatus {
+  ACTIVE
+  INACTIVE
+  SHORTLY
 }
