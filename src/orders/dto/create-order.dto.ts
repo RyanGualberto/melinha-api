@@ -4,6 +4,7 @@ class OrderProductVariantDto {
 }
 
 class OrderProductDto {
+  productObservation?: string;
   productId: string;
   quantity: number;
   price: number;
@@ -21,4 +22,5 @@ export class CreateOrderDto {
   paymentChange?: number;
   addressSnapshot: string;
   userSnapshot: string;
+  orderObservation?: string;
 }

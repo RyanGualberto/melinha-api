@@ -112,6 +112,7 @@ model Order {
 
   products      OrderProduct[]
   status        OrderStatus    @default(PENDING)
+  observation   String?
   total         Float
   discount      Float?
   deliveryCost  Float
@@ -133,9 +134,10 @@ model OrderProduct {
   productTitleSnapshot String
   productPriceSnapshot Float
 
-  quantity Int
-  price    Float
-  variants OrderProductVariant[]
+  observation String?
+  quantity    Int
+  price       Float
+  variants    OrderProductVariant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

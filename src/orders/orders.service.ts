@@ -17,6 +17,7 @@ export class OrdersService {
       data: {
         userId: createOrderDto.userId,
         addressId: createOrderDto.addressId,
+        observation: createOrderDto.orderObservation,
         products: {
           create: await Promise.all(
             createOrderDto.products.map(async (product) => {
@@ -24,6 +25,7 @@ export class OrdersService {
                 where: { id: product.productId },
               });
               return {
+                observation: product.productObservation,
                 productId: product.productId,
                 quantity: product.quantity,
                 price: product.price,
@@ -67,6 +69,21 @@ export class OrdersService {
     return await this.prismaService.order.findMany({
       include: {
         user: true,
+        products: {
+          include: {
+            variants: true,
+          },
+        },
+      },
+    });
+  }
+
+  async listUserOrders(userId: string) {
+    return await this.prismaService.order.findMany({
+      where: {
+        userId,
+      },
+      include: {
         products: {
           include: {
             variants: true,
