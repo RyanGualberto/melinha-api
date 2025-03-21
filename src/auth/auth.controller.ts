@@ -27,7 +27,6 @@ export class AuthController {
   @Get('me')
   @HttpCode(200)
   async me(@Req() req: Request) {
-    console.log(req.user);
     return await this.authService.me(req.user?.id);
   }
 
