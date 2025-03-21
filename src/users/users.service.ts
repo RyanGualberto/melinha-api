@@ -30,13 +30,28 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      include: {
+        orders: {
+          where: { status: 'completed' },
+          select: { createdAt: true },
+        },
+      },
+    });
+    const usersWithoutEmail = users.map((user) => ({
+      ...user,
+      email: this.maskEmail(user.email),
+    }));
+
+    return usersWithoutEmail;
   }
 
   async findOne(id: string) {
-    return await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
+
+    return { ...user, email: this.maskEmail(user.email) };
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -65,5 +80,14 @@ export class UsersService {
 
   async comparePassword(plainText: string, hashedPassword: string) {
     return await bcrypt.compare(plainText, hashedPassword);
+  }
+
+  private maskEmail(email: string) {
+    const emailParts = email.split('@');
+    const maskedEmail = `${emailParts[0].slice(0, 3)}${emailParts[0]
+      .slice(3, -3)
+      .replace(/./g, '*')}@${emailParts[1]}`;
+
+    return maskedEmail;
   }
 }
