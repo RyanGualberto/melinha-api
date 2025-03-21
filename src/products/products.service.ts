@@ -9,7 +9,12 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto) {
     return await this.prismaService.product.create({
       data: {
-        ...createProductDto,
+        description: createProductDto.description,
+        image: createProductDto.image,
+        price: createProductDto.price,
+        status: createProductDto.status,
+        title: createProductDto.title,
+        categoryId: createProductDto.categoryId,
       },
     });
   }
