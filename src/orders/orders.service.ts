@@ -31,7 +31,6 @@ export class OrdersService {
                 price: product.price,
                 productTitleSnapshot: productData.title,
                 productPriceSnapshot: product.price,
-                product: productData,
                 variants: {
                   create: product.variants.map((variant) => ({
                     variantName: variant.variantName,

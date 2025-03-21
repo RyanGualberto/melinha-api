@@ -34,7 +34,7 @@ export class OrdersController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('users')
+  @Get('current-user')
   async listUserOrders(@Req() req: Request) {
     return await this.ordersService.listUserOrders(req.user?.id);
   }
