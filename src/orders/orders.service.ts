@@ -74,6 +74,9 @@ export class OrdersService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -88,6 +91,9 @@ export class OrdersService {
             variants: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
