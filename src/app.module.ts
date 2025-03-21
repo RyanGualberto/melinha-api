@@ -10,6 +10,7 @@ import { ProductVariantsModule } from './product-variants/product-variants.modul
 import { ProductVariantCategoriesModule } from './product-variant-categories/product-variant-categories.module';
 import { MenuModule } from './menu/menu.module';
 import { SettingsModule } from './settings/settings.module';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SettingsModule } from './settings/settings.module';
     ProductVariantCategoriesModule,
     MenuModule,
     SettingsModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
