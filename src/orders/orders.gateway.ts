@@ -27,4 +27,9 @@ export class OrdersGateway {
   handleNewOrder(@MessageBody() data: NewOrderData): void {
     this.server.emit('orderCreated', data); // Agora 'data' está tipada
   }
+
+  @SubscribeMessage('updateOrder')
+  handleUpdateOrder(@MessageBody() data: NewOrderData): void {
+    this.server.emit('orderUpdated', data); // Agora 'data' está tipada
+  }
 }

@@ -121,7 +121,7 @@ export class OrdersService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    return await this.prismaService.order.update({
+    const order = await this.prismaService.order.update({
       where: { id },
       data: {
         status: updateOrderDto.status,
@@ -134,6 +134,9 @@ export class OrdersService {
         },
       },
     });
+
+    this.ordersGateway.server.emit('orderUpdated', order);
+    return order;
   }
 
   async remove(id: string) {
