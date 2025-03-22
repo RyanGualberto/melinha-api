@@ -12,6 +12,7 @@ import { MenuModule } from './menu/menu.module';
 import { SettingsModule } from './settings/settings.module';
 import { AddressModule } from './address/address.module';
 import { OrdersModule } from './orders/orders.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OrdersModule } from './orders/orders.module';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
+    MailModule,
     AuthModule,
     UsersModule,
     ProductsModule,

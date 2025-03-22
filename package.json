@@ -18,6 +18,7 @@
     "test": "ts-node test/config/setup-database.ts && NODE_ENV=test jest --config ./test/jest-e2e.json --setupFiles ./config/setup-tests.ts "
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^11.0.1",
@@ -27,9 +28,12 @@
     "@nestjs/platform-socket.io": "^11.0.12",
     "@nestjs/websockets": "^11.0.12",
     "@prisma/client": "^6.5.0",
+    "@sendgrid/mail": "^8.1.4",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
+    "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1"
