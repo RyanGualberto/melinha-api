@@ -1,50 +1,60 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import sgMail from '@sendgrid/mail';
+import { Order, User } from '@prisma/client';
 
 @Injectable()
 export class MailService {
-  constructor(private configService: ConfigService) {
-    sgMail.setApiKey(this.configService.get<string>('SENDGRID_API_KEY'));
-  }
+  constructor(private mailerService: MailerService) {}
 
-  sendWelcomeEmail({ name, email }: { name: string; email: string }) {
-    this.sendEmail(
-      email,
-      'Bem vindo à Melinha Açaíteria',
-      'd-ea25be228b8d4cf9b9f9c7ec239e6dd8',
-      {
-        name: name,
-      },
-    )
+  async sendWelcomeEmail(email: string, name: string) {
+    await this.mailerService
+      .sendMail({
+        to: email,
+        subject: 'Seja Bem vindo à Melinha Açaíteria!',
+        template: 'welcome',
+        context: {
+          name,
+        },
+      })
       .then(() => {
-        console.log('E-mail de boas-vindas enviado com sucesso');
+        console.log('E-mail enviado para', email);
       })
       .catch((error) => {
-        console.error('Erro ao enviar o e-mail de boas-vindas', error);
+        console.error(error);
       });
   }
 
-  async sendEmail(
-    to: string,
-    subject: string,
-    templateId: string,
-    dynamicData: Record<string, string>,
-  ) {
-    const msg = {
-      to,
-      from: 'your-email@example.com',
-      subject,
-      templateId,
-      dynamic_template_data: dynamicData,
-    };
+  async sendOrderEmail(order: Order) {
+    const user: User | null =
+      typeof order.userSnapshot === 'string'
+        ? (JSON.parse(order.userSnapshot) as User)
+        : null;
 
-    try {
-      await sgMail.send(msg);
-      console.log('E-mail enviado com sucesso');
-    } catch (error) {
-      console.error('Erro ao enviar o e-mail', error);
-      throw new Error('Erro ao enviar o e-mail');
-    }
+    await this.mailerService
+      .sendMail({
+        to: user.email,
+        subject: 'Pedido realizado com sucesso!',
+        template: `status-updated-${order.status.toLowerCase()}`,
+        context: {
+          orderId: order.id.split('-')[0],
+          clientName: user.firstName + ' ' + user.lastName,
+          dateTime: new Date(order.createdAt).toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+          }),
+          total: order.total,
+          deliveryTime: new Date(
+            new Date(order.createdAt).getTime() + order.deliveryTime * 60000,
+          ).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        },
+      })
+      .then(() => {
+        console.log('E-mail enviado para', user.email);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 }

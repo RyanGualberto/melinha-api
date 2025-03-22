@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { PrismaService } from '../config/prisma-service';
-import { MailModule } from 'src/mail/mail.module';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -15,9 +15,8 @@ import { MailModule } from 'src/mail/mail.module';
         signOptions: { expiresIn: '1d' },
       }),
     }),
-    MailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, PrismaService],
+  providers: [AuthService, UsersService, PrismaService, MailService],
 })
 export class AuthModule {}

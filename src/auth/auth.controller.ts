@@ -24,19 +24,20 @@ export class AuthController {
   @Post('register')
   @HttpCode(201)
   async register(@Body() createUserDto: CreateUserDto) {
-    const user = await this.authService.register(createUserDto);
-    this.mailService.sendWelcomeEmail({
-      name: user.user.firstName,
-      email: user.user.email,
-    });
-    return user;
+    const response = await this.authService.register(createUserDto);
+    await this.mailService.sendWelcomeEmail(
+      response.user.email,
+      response.user.firstName + ' ' + response.user.lastName,
+    );
+    return response;
   }
 
   @UseGuards(AuthGuard)
   @Get('me')
   @HttpCode(200)
   async me(@Req() req: Request) {
-    return await this.authService.me(req.user?.id);
+    const response = await this.authService.me(req.user?.id);
+    return response;
   }
 
   @Post('login')

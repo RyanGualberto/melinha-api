@@ -5,6 +5,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderStatus } from '@prisma/client';
 import { OrdersGateway } from './orders.gateway';
 import { SettingsService } from 'src/settings/settings.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OrdersService {
@@ -12,6 +13,7 @@ export class OrdersService {
     private prismaService: PrismaService,
     private ordersGateway: OrdersGateway,
     private readonly settingsService: SettingsService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -134,6 +136,12 @@ export class OrdersService {
         },
       },
     });
+
+    const fullOrder = await this.prismaService.order.findUnique({
+      where: { id },
+    });
+
+    await this.mailService.sendOrderEmail(fullOrder);
 
     this.ordersGateway.server.emit('orderUpdated', order);
     return order;

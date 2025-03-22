@@ -12,7 +12,9 @@ import { MenuModule } from './menu/menu.module';
 import { SettingsModule } from './settings/settings.module';
 import { AddressModule } from './address/address.module';
 import { OrdersModule } from './orders/orders.module';
-import { MailModule } from './mail/mail.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -20,7 +22,25 @@ import { MailModule } from './mail/mail.module';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    MailModule,
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      },
+      defaults: {
+        from: '"Melinha Açaíteria" <no-reply@melinhaacaiteria.com>',
+      },
+      template: {
+        dir: join(__dirname, '..', 'templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     AuthModule,
     UsersModule,
     ProductsModule,
