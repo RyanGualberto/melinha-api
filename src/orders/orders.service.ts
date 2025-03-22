@@ -141,7 +141,9 @@ export class OrdersService {
       where: { id },
     });
 
-    await this.mailService.sendOrderEmail(fullOrder);
+    if (updateOrderDto.status !== OrderStatus.CANCELED) {
+      await this.mailService.sendOrderEmail(fullOrder);
+    }
 
     this.ordersGateway.server.emit('orderUpdated', order);
     return order;

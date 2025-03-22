@@ -16,9 +16,7 @@ export class MailService {
           name,
         },
       })
-      .then(() => {
-        console.log('E-mail enviado para', email);
-      })
+      .then(() => {})
       .catch((error) => {
         console.error(error);
       });
@@ -34,11 +32,11 @@ export class MailService {
       .sendMail({
         to: user.email,
         subject: 'Pedido realizado com sucesso!',
-        template: `status-updated-${order.status.toLowerCase()}`,
+        template: `status-updated-${order.status.toLowerCase().replaceAll('_', '-')}`,
         context: {
           orderId: order.id.split('-')[0],
           clientName: user.firstName + ' ' + user.lastName,
-          dateTime: new Date(order.createdAt).toLocaleString('pt-BR', {
+          datetime: new Date(order.createdAt).toLocaleString('pt-BR', {
             timeZone: 'America/Sao_Paulo',
           }),
           total: order.total,
@@ -50,9 +48,7 @@ export class MailService {
           }),
         },
       })
-      .then(() => {
-        console.log('E-mail enviado para', user.email);
-      })
+      .then(() => {})
       .catch((error) => {
         console.error(error);
       });
