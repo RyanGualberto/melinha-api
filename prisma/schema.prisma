@@ -115,6 +115,7 @@ model Order {
   observation   String?
   total         Float
   discount      Float?
+  deliveryTime  Int            @default(30)
   deliveryCost  Float
   paymentMethod String
   paymentChange Float?
@@ -163,10 +164,13 @@ model OrderProductVariant {
 }
 
 model StoreSettings {
-  id        String @id @default(uuid())
-  instagram String
-  whatsapp  String
-  email     String
+  id           String  @id @default(uuid())
+  instagram    String
+  whatsapp     String
+  email        String
+  deliveryTime String
+  opened       Boolean
+  orderMinimum Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

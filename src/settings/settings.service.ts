@@ -9,6 +9,20 @@ export class SettingsService {
   async findOne() {
     const settings = await this.prismaService.storeSettings.findFirst();
 
+    if (!settings) {
+      const newSettings = await this.prismaService.storeSettings.create({
+        data: {
+          instagram: '',
+          whatsapp: '',
+          email: '',
+          deliveryTime: '',
+          orderMinimum: 0,
+          opened: false,
+        },
+      });
+
+      return newSettings;
+    }
     return settings;
   }
 
@@ -27,6 +41,9 @@ export class SettingsService {
         instagram: updateSettingsDto.instagram,
         whatsapp: updateSettingsDto.whatsapp,
         email: updateSettingsDto.email,
+        deliveryTime: updateSettingsDto.deliveryTime,
+        orderMinimum: updateSettingsDto.orderMinimum,
+        opened: updateSettingsDto.opened,
       },
     });
   }

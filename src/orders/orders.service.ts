@@ -45,6 +45,7 @@ export class OrdersService {
         total: createOrderDto.total,
         discount: createOrderDto.discount,
         deliveryCost: createOrderDto.deliveryCost,
+        deliveryTime: createOrderDto.deliveryTime,
         paymentMethod: createOrderDto.paymentMethod,
         paymentChange: createOrderDto.paymentChange,
         addressSnapshot: createOrderDto.addressSnapshot,
@@ -60,7 +61,6 @@ export class OrdersService {
     });
 
     this.ordersGateway.server.emit('orderCreated', order);
-
     return order;
   }
 

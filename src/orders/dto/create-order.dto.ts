@@ -18,6 +18,7 @@ export class CreateOrderDto {
   total: number;
   discount: number;
   deliveryCost: number;
+  deliveryTime: number;
   paymentMethod: string;
   paymentChange?: number;
   addressSnapshot: string;
