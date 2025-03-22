@@ -1,18 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../config/prisma-service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderStatus } from '@prisma/client';
 import { OrdersGateway } from './orders.gateway';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private prismaService: PrismaService,
     private ordersGateway: OrdersGateway,
+    private readonly settingsService: SettingsService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
+    const storeSettings = await this.settingsService.findOne();
+
+    if (!storeSettings.opened) {
+      throw new BadRequestException('Store is closed');
+    }
+
     const order = await this.prismaService.order.create({
       data: {
         userId: createOrderDto.userId,
@@ -45,10 +53,10 @@ export class OrdersService {
         total: createOrderDto.total,
         discount: createOrderDto.discount,
         deliveryCost: createOrderDto.deliveryCost,
-        deliveryTime: createOrderDto.deliveryTime,
         paymentMethod: createOrderDto.paymentMethod,
         paymentChange: createOrderDto.paymentChange,
         addressSnapshot: createOrderDto.addressSnapshot,
+        deliveryTime: storeSettings.deliveryTime,
         userSnapshot: createOrderDto.userSnapshot,
       },
       include: {

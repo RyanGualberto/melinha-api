@@ -15,7 +15,7 @@ export class SettingsService {
           instagram: '',
           whatsapp: '',
           email: '',
-          deliveryTime: '',
+          deliveryTime: 30,
           orderMinimum: 0,
           opened: false,
         },

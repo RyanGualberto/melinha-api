@@ -168,7 +168,7 @@ model StoreSettings {
   instagram    String
   whatsapp     String
   email        String
-  deliveryTime String
+  deliveryTime Int     @default(30)
   opened       Boolean
   orderMinimum Float
 
