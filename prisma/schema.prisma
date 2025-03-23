@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(uuid())
-  firstName   String
-  lastName    String
-  email       String    @unique
-  phoneNumber String    @unique
-  password    String
-  role        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  addresses   Address[]
-  orders      Order[]
+  id           String    @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String    @unique
+  phoneNumber  String    @unique
+  password     String
+  role         String
+  resetToken   String?
+  resetExpires DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  addresses    Address[]
+  orders       Order[]
 
   @@map("users")
 }

@@ -53,4 +53,21 @@ export class MailService {
         console.error(error);
       });
   }
+
+  async sendPasswordResetEmail(email: string, name: string, token: string) {
+    await this.mailerService
+      .sendMail({
+        to: email,
+        subject: 'Redefinição de senha',
+        template: 'reset-password',
+        context: {
+          name,
+          token,
+        },
+      })
+      .then(() => {})
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 }
