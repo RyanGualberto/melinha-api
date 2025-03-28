@@ -103,13 +103,13 @@ model ProductVariantCategory {
 }
 
 model Order {
-  id        String   @id @default(uuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  addressId String?
-  address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
-
-  addressSnapshot Json
+  id              String   @id @default(uuid())
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  addressId       String?
+  address         Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  isWithdrawal    Boolean? @default(false)
+  addressSnapshot Json?
   userSnapshot    Json
 
   products      OrderProduct[]

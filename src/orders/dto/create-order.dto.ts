@@ -13,14 +13,15 @@ class OrderProductDto {
 
 export class CreateOrderDto {
   userId: string;
-  addressId: string;
+  addressId?: string;
   products: OrderProductDto[];
   total: number;
   discount: number;
   deliveryCost: number;
   paymentMethod: string;
   paymentChange?: number;
-  addressSnapshot: string;
+  addressSnapshot?: string;
   userSnapshot: string;
   orderObservation?: string;
+  isWithdrawal?: boolean;
 }
