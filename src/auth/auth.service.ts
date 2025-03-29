@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
 import { PrismaService } from '../config/prisma-service';
@@ -50,8 +50,7 @@ export class AuthService {
 
   async me(id: string) {
     const user = await this.usersService.findOne(id);
-    const settings = await this.prismaService.storeSettings.findFirst();
-    return { ...user, settings };
+    return user;
   }
 
   async requestPasswordReset(email: string) {
@@ -71,7 +70,7 @@ export class AuthService {
 
     await this.mailService.sendPasswordResetEmail(
       user.email,
-      user.firstName + user.lastName,
+      user.firstName + ' ' + user.lastName,
       resetToken,
     );
 
@@ -84,16 +83,15 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Token inválido ou expirado.');
+      throw new BadRequestException('Token inválido ou expirado.');
     }
 
-    // Criptografar a nova senha
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const salt = crypto.randomInt(0, 10);
+    const hashed_password = await bcrypt.hash(newPassword, salt);
 
-    // Atualizar o usuário, removendo o token e redefinindo a senha
     await this.prismaService.user.update({
       where: { id: user.id },
-      data: { password: hashedPassword, resetToken: null, resetExpires: null },
+      data: { password: hashed_password, resetToken: null, resetExpires: null },
     });
 
     return { message: 'Senha redefinida com sucesso.' };

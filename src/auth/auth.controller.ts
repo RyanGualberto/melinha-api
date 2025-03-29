@@ -13,6 +13,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Request } from 'express';
 import { AuthGuard } from './auth.guard';
 import { MailService } from '../mail/mail.service';
+import { PrismaErrorHandler } from 'src/config/prisma-service';
 
 @Controller('auth')
 export class AuthController {
@@ -24,12 +25,17 @@ export class AuthController {
   @Post('register')
   @HttpCode(201)
   async register(@Body() createUserDto: CreateUserDto) {
-    const response = await this.authService.register(createUserDto);
-    await this.mailService.sendWelcomeEmail(
-      response.user.email,
-      response.user.firstName + ' ' + response.user.lastName,
-    );
-    return response;
+    try {
+      const response = await this.authService.register(createUserDto);
+      await this.mailService.sendWelcomeEmail(
+        response.user.email,
+        response.user.firstName + ' ' + response.user.lastName,
+      );
+      return response;
+    } catch (error) {
+      PrismaErrorHandler(error);
+      console.error(error);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -44,5 +50,20 @@ export class AuthController {
   @HttpCode(200)
   async login(@Body() loginAuthDto: LoginAuthDto) {
     return await this.authService.login(loginAuthDto);
+  }
+
+  @Post('request-password-reset')
+  @HttpCode(200)
+  async requestPasswordReset(@Body('email') email: string) {
+    return await this.authService.requestPasswordReset(email);
+  }
+
+  @Post('reset-password')
+  @HttpCode(200)
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return await this.authService.resetPassword(token, newPassword);
   }
 }

@@ -61,7 +61,7 @@ export class MailService {
         subject: 'Redefinição de senha',
         template: 'reset-password',
         context: {
-          name,
+          clientName: name,
           token,
         },
       })

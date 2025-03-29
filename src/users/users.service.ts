@@ -33,9 +33,16 @@ export class UsersService {
     const users = await this.prisma.user.findMany({
       include: {
         orders: {
-          where: { status: OrderStatus.COMPLETED },
+          where: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+          },
           select: { createdAt: true },
         },
+      },
+      omit: {
+        password: true,
       },
     });
     const usersWithoutEmail = users.map((user) => ({
@@ -49,6 +56,9 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
+      omit: {
+        password: true,
+      },
     });
 
     return { ...user, email: this.maskEmail(user.email) };
