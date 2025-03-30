@@ -42,9 +42,10 @@ export class MailService {
           total: order.total,
           deliveryTime: new Date(
             new Date(order.createdAt).getTime() + order.deliveryTime * 60000,
-          ).toLocaleTimeString('pt-BR', {
+          ).toLocaleString('pt-BR', {
             hour: '2-digit',
             minute: '2-digit',
+            timeZone: 'America/Sao_Paulo',
           }),
         },
       })
