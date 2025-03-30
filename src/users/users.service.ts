@@ -44,6 +44,9 @@ export class UsersService {
       omit: {
         password: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     const usersWithoutEmail = users.map((user) => ({
       ...user,
