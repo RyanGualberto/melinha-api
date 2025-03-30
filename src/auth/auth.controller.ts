@@ -27,10 +27,13 @@ export class AuthController {
   async register(@Body() createUserDto: CreateUserDto) {
     try {
       const response = await this.authService.register(createUserDto);
-      await this.mailService.sendWelcomeEmail(
-        response.user.email,
-        response.user.firstName + ' ' + response.user.lastName,
-      );
+      this.mailService
+        .sendWelcomeEmail(
+          response.user.email,
+          response.user.firstName + ' ' + response.user.lastName,
+        )
+        .then(() => {})
+        .catch(() => {});
       return response;
     } catch (error) {
       PrismaErrorHandler(error);
