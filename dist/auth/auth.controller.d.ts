@@ -24,22 +24,10 @@ export declare class AuthController {
         accessToken: string;
     }>;
     me(req: Request): Promise<{
-        settings: {
-            email: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            deliveryTime: number;
-            instagram: string;
-            whatsapp: string;
-            opened: boolean;
-            orderMinimum: number;
-        };
         email: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        password: string;
         id: string;
         role: string;
         resetToken: string | null;
@@ -62,5 +50,11 @@ export declare class AuthController {
             updatedAt: Date;
         };
         accessToken: string;
+    }>;
+    requestPasswordReset(email: string): Promise<{
+        message: string;
+    }>;
+    resetPassword(token: string, newPassword: string): Promise<{
+        message: string;
     }>;
 }

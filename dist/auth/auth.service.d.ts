@@ -43,22 +43,10 @@ export declare class AuthService {
         accessToken: string;
     }>;
     me(id: string): Promise<{
-        settings: {
-            email: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            deliveryTime: number;
-            instagram: string;
-            whatsapp: string;
-            opened: boolean;
-            orderMinimum: number;
-        };
         email: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        password: string;
         id: string;
         role: string;
         resetToken: string | null;

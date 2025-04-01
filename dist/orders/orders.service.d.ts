@@ -39,7 +39,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;
@@ -92,7 +93,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;
@@ -132,7 +134,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;
@@ -185,7 +188,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;
@@ -225,7 +229,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;
@@ -242,7 +247,8 @@ export declare class OrdersService {
         updatedAt: Date;
         userId: string | null;
         addressId: string | null;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
+        isWithdrawal: boolean | null;
+        addressSnapshot: import("@prisma/client/runtime/library").JsonValue | null;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
         observation: string | null;

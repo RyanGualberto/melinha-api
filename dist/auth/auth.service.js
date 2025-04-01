@@ -41,15 +41,12 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const bcrypt = __importStar(require("bcrypt"));
 const crypto = __importStar(require("crypto"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const users_service_1 = require("../users/users.service");
 const prisma_service_1 = require("../config/prisma-service");
 const mail_service_1 = require("../mail/mail.service");
@@ -83,8 +80,7 @@ let AuthService = class AuthService {
     }
     async me(id) {
         const user = await this.usersService.findOne(id);
-        const settings = await this.prismaService.storeSettings.findFirst();
-        return { ...user, settings };
+        return user;
     }
     async requestPasswordReset(email) {
         const user = await this.usersService.findByEmail(email);
@@ -97,7 +93,7 @@ let AuthService = class AuthService {
             where: { email },
             data: { resetToken, resetExpires },
         });
-        await this.mailService.sendPasswordResetEmail(user.email, user.firstName + user.lastName, resetToken);
+        await this.mailService.sendPasswordResetEmail(user.email, user.firstName + ' ' + user.lastName, resetToken);
         return { message: 'E-mail de redefinição enviado.' };
     }
     async resetPassword(token, newPassword) {
@@ -105,12 +101,13 @@ let AuthService = class AuthService {
             where: { resetToken: token, resetExpires: { gt: new Date() } },
         });
         if (!user) {
-            throw new Error('Token inválido ou expirado.');
+            throw new common_1.BadRequestException('Token inválido ou expirado.');
         }
-        const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
+        const salt = crypto.randomInt(0, 10);
+        const hashed_password = await bcrypt.hash(newPassword, salt);
         await this.prismaService.user.update({
             where: { id: user.id },
-            data: { password: hashedPassword, resetToken: null, resetExpires: null },
+            data: { password: hashed_password, resetToken: null, resetExpires: null },
         });
         return { message: 'Senha redefinida com sucesso.' };
     }

@@ -14,7 +14,6 @@ export declare class UsersService {
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        password: string;
         id: string;
         role: string;
         resetToken: string | null;
@@ -27,7 +26,6 @@ export declare class UsersService {
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        password: string;
         id: string;
         role: string;
         resetToken: string | null;

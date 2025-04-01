@@ -7,8 +7,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrismaService = void 0;
+exports.PrismaErrorHandler = PrismaErrorHandler;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
+const library_1 = require("@prisma/client/runtime/library");
 let PrismaService = class PrismaService extends client_1.PrismaClient {
     async onModuleInit() {
         await this.$connect();
@@ -21,4 +23,33 @@ exports.PrismaService = PrismaService;
 exports.PrismaService = PrismaService = __decorate([
     (0, common_1.Injectable)()
 ], PrismaService);
+function PrismaErrorHandler(error) {
+    if (error instanceof library_1.PrismaClientKnownRequestError) {
+        switch (error.code) {
+            case 'P2002':
+                throw new common_1.BadRequestException({
+                    message: `A chave(s) única(s) [${error.meta.target}] já estão sendo utilizada(s)`,
+                });
+            case 'P2025':
+                throw new common_1.NotFoundException({
+                    message: error.message,
+                });
+            default:
+                console.error(error);
+                throw new common_1.InternalServerErrorException({
+                    message: 'Erro ao completar a operação',
+                    error: error,
+                });
+        }
+    }
+    if (error instanceof library_1.PrismaClientValidationError) {
+        throw new common_1.UnprocessableEntityException({
+            message: 'Preencha os campos corretamente',
+        });
+    }
+    throw new common_1.InternalServerErrorException({
+        message: 'Erro ao completar a operação',
+        error: error,
+    });
+}
 //# sourceMappingURL=prisma-service.js.map

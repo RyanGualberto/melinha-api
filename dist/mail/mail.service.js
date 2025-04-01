@@ -47,9 +47,10 @@ let MailService = class MailService {
                     timeZone: 'America/Sao_Paulo',
                 }),
                 total: order.total,
-                deliveryTime: new Date(new Date(order.createdAt).getTime() + order.deliveryTime * 60000).toLocaleTimeString('pt-BR', {
+                deliveryTime: new Date(new Date(order.createdAt).getTime() + order.deliveryTime * 60000).toLocaleString('pt-BR', {
                     hour: '2-digit',
                     minute: '2-digit',
+                    timeZone: 'America/Sao_Paulo',
                 }),
             },
         })
@@ -65,7 +66,7 @@ let MailService = class MailService {
             subject: 'Redefinição de senha',
             template: 'reset-password',
             context: {
-                name,
+                clientName: name,
                 token,
             },
         })

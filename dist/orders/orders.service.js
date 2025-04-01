@@ -31,8 +31,11 @@ let OrdersService = class OrdersService {
         const order = await this.prismaService.order.create({
             data: {
                 userId: createOrderDto.userId,
-                addressId: createOrderDto.addressId,
+                addressId: createOrderDto.isWithdrawal
+                    ? null
+                    : createOrderDto.addressId,
                 observation: createOrderDto.orderObservation,
+                isWithdrawal: createOrderDto.isWithdrawal,
                 products: {
                     create: await Promise.all(createOrderDto.products.map(async (product) => {
                         const productData = await this.prismaService.product.findUnique({
