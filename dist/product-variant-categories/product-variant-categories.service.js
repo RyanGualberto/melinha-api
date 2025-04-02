@@ -18,7 +18,10 @@ let ProductVariantCategoriesService = class ProductVariantCategoriesService {
     }
     async create(createProductVariantCategoryDto) {
         return await this.prismaService.productVariantCategory.create({
-            data: createProductVariantCategoryDto,
+            data: {
+                ...createProductVariantCategoryDto,
+                max: createProductVariantCategoryDto.max || null,
+            },
         });
     }
     async findAll() {
@@ -32,7 +35,10 @@ let ProductVariantCategoriesService = class ProductVariantCategoriesService {
     async update(id, updateProductVariantCategoryDto) {
         await this.prismaService.productVariantCategory.update({
             where: { id },
-            data: updateProductVariantCategoryDto,
+            data: {
+                ...updateProductVariantCategoryDto,
+                max: updateProductVariantCategoryDto.max || null,
+            },
         });
     }
     async remove(id) {

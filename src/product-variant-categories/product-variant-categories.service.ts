@@ -11,7 +11,10 @@ export class ProductVariantCategoriesService {
     createProductVariantCategoryDto: CreateProductVariantCategoryDto,
   ) {
     return await this.prismaService.productVariantCategory.create({
-      data: createProductVariantCategoryDto,
+      data: {
+        ...createProductVariantCategoryDto,
+        max: createProductVariantCategoryDto.max || null,
+      },
     });
   }
 
@@ -31,7 +34,10 @@ export class ProductVariantCategoriesService {
   ) {
     await this.prismaService.productVariantCategory.update({
       where: { id },
-      data: updateProductVariantCategoryDto,
+      data: {
+        ...updateProductVariantCategoryDto,
+        max: updateProductVariantCategoryDto.max || null,
+      },
     });
   }
 
