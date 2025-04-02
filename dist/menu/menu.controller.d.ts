@@ -11,6 +11,8 @@ export declare class MenuController {
                         id: string;
                         createdAt: Date;
                         updatedAt: Date;
+                        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+                        max: number | null;
                     };
                 } & {
                     name: string;

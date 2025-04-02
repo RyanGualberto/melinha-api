@@ -32,6 +32,8 @@ export declare class ProductVariantsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+            max: number | null;
         };
     } & {
         name: string;
@@ -61,6 +63,8 @@ export declare class ProductVariantsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+            max: number | null;
         };
     } & {
         name: string;

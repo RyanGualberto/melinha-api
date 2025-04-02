@@ -9,18 +9,24 @@ export declare class ProductVariantCategoriesService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
     findAll(): Promise<{
         name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }[]>;
     findOne(id: string): Promise<{
         name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
     update(id: string, updateProductVariantCategoryDto: UpdateProductVariantCategoryDto): Promise<void>;
     remove(id: string): Promise<{
@@ -28,5 +34,7 @@ export declare class ProductVariantCategoriesService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
 }
