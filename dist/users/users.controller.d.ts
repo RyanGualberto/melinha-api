@@ -8,10 +8,10 @@ export declare class UsersController {
         orders: {
             createdAt: Date;
         }[];
-        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -20,10 +20,10 @@ export declare class UsersController {
     }[]>;
     findOne(id: string): Promise<{
         email: string;
-        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -31,12 +31,12 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
-        id: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -44,12 +44,12 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     remove(id: string): Promise<{
-        id: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;

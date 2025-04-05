@@ -5,36 +5,36 @@ export declare class ProductVariantCategoriesService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
     create(createProductVariantCategoryDto: CreateProductVariantCategoryDto): Promise<{
-        id: string;
         name: string;
-        max: number | null;
-        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
     findAll(): Promise<{
-        id: string;
         name: string;
-        max: number | null;
-        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }[]>;
     findOne(id: string): Promise<{
-        id: string;
         name: string;
-        max: number | null;
-        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
     update(id: string, updateProductVariantCategoryDto: UpdateProductVariantCategoryDto): Promise<void>;
     remove(id: string): Promise<{
-        id: string;
         name: string;
-        max: number | null;
-        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
+        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+        max: number | null;
     }>;
 }

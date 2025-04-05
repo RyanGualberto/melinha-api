@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../config/prisma-service';
-import { Address } from '@prisma/client';
+import { Address, OrderStatus } from '@prisma/client';
 
 @Injectable()
 export class DashboardService {
@@ -29,21 +29,41 @@ export class DashboardService {
 
     // Quantidade de pedidos nos períodos
     const ordersLast30Days = await this.prismaService.order.count({
-      where: { createdAt: { gte: last30Days } },
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
+        },
+        createdAt: { gte: last30Days },
+      },
     });
 
     const ordersLastWeekend = await this.prismaService.order.count({
-      where: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
+        },
+        createdAt: { gte: lastFriday, lte: mondayAt2AM },
+      },
     });
 
     // Valor faturado nos períodos
     const revenueLast30Days = await this.prismaService.order.aggregate({
-      where: { createdAt: { gte: last30Days } },
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
+        },
+        createdAt: { gte: last30Days },
+      },
       _sum: { total: true },
     });
 
     const revenueLastWeekend = await this.prismaService.order.aggregate({
-      where: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
+        },
+        createdAt: { gte: lastFriday, lte: mondayAt2AM },
+      },
       _sum: { total: true },
     });
 
@@ -51,7 +71,14 @@ export class DashboardService {
     const bestWorstSellingItemLast30Days =
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
-        where: { order: { createdAt: { gte: last30Days } } },
+        where: {
+          order: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+            createdAt: { gte: last30Days },
+          },
+        },
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: 'desc' } },
         take: 1, // Mais vendido
@@ -60,7 +87,14 @@ export class DashboardService {
     const leastSellingItemLast30Days =
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
-        where: { order: { createdAt: { gte: last30Days } } },
+        where: {
+          order: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+            createdAt: { gte: last30Days },
+          },
+        },
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: 'asc' } },
         take: 1, // Menos vendido
@@ -71,7 +105,12 @@ export class DashboardService {
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
         where: {
-          order: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+          order: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+            createdAt: { gte: lastFriday, lte: mondayAt2AM },
+          },
         },
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: 'desc' } },
@@ -82,7 +121,12 @@ export class DashboardService {
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
         where: {
-          order: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+          order: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+            createdAt: { gte: lastFriday, lte: mondayAt2AM },
+          },
         },
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: 'asc' } },
@@ -92,6 +136,9 @@ export class DashboardService {
     const addressWithOrdersLast30Days = await this.prismaService.order.findMany(
       {
         where: {
+          status: {
+            not: OrderStatus.CANCELED,
+          },
           createdAt: {
             gte: last30Days,
           },
@@ -133,6 +180,9 @@ export class DashboardService {
     const addressWithOrdersLastWeekend =
       await this.prismaService.order.findMany({
         where: {
+          status: {
+            not: OrderStatus.CANCELED,
+          },
           createdAt: {
             gte: lastFriday,
             lte: mondayAt2AM,

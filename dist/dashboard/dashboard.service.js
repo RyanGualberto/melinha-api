@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../config/prisma-service");
+const client_1 = require("@prisma/client");
 let DashboardService = class DashboardService {
     constructor(prismaService) {
         this.prismaService = prismaService;
@@ -32,29 +33,63 @@ let DashboardService = class DashboardService {
         mondayAt2AM.setDate(lastFriday.getDate() + 3);
         mondayAt2AM.setHours(2, 0, 0, 0);
         const ordersLast30Days = await this.prismaService.order.count({
-            where: { createdAt: { gte: last30Days } },
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: { gte: last30Days },
+            },
         });
         const ordersLastWeekend = await this.prismaService.order.count({
-            where: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: { gte: lastFriday, lte: mondayAt2AM },
+            },
         });
         const revenueLast30Days = await this.prismaService.order.aggregate({
-            where: { createdAt: { gte: last30Days } },
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: { gte: last30Days },
+            },
             _sum: { total: true },
         });
         const revenueLastWeekend = await this.prismaService.order.aggregate({
-            where: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: { gte: lastFriday, lte: mondayAt2AM },
+            },
             _sum: { total: true },
         });
         const bestWorstSellingItemLast30Days = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
-            where: { order: { createdAt: { gte: last30Days } } },
+            where: {
+                order: {
+                    status: {
+                        not: client_1.OrderStatus.CANCELED,
+                    },
+                    createdAt: { gte: last30Days },
+                },
+            },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'desc' } },
             take: 1,
         });
         const leastSellingItemLast30Days = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
-            where: { order: { createdAt: { gte: last30Days } } },
+            where: {
+                order: {
+                    status: {
+                        not: client_1.OrderStatus.CANCELED,
+                    },
+                    createdAt: { gte: last30Days },
+                },
+            },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'asc' } },
             take: 1,
@@ -62,7 +97,12 @@ let DashboardService = class DashboardService {
         const bestWorstSellingItemLastWeekend = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
             where: {
-                order: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+                order: {
+                    status: {
+                        not: client_1.OrderStatus.CANCELED,
+                    },
+                    createdAt: { gte: lastFriday, lte: mondayAt2AM },
+                },
             },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'desc' } },
@@ -71,7 +111,12 @@ let DashboardService = class DashboardService {
         const leastSellingItemLastWeekend = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
             where: {
-                order: { createdAt: { gte: lastFriday, lte: mondayAt2AM } },
+                order: {
+                    status: {
+                        not: client_1.OrderStatus.CANCELED,
+                    },
+                    createdAt: { gte: lastFriday, lte: mondayAt2AM },
+                },
             },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'asc' } },
@@ -79,6 +124,9 @@ let DashboardService = class DashboardService {
         });
         const addressWithOrdersLast30Days = await this.prismaService.order.findMany({
             where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
                 createdAt: {
                     gte: last30Days,
                 },
@@ -109,6 +157,9 @@ let DashboardService = class DashboardService {
         const leastSellingNeighborhoodLast30Days = sortedDistrictsLast30Days[sortedDistrictsLast30Days.length - 1] || ['Nenhum', 0];
         const addressWithOrdersLastWeekend = await this.prismaService.order.findMany({
             where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
                 createdAt: {
                     gte: lastFriday,
                     lte: mondayAt2AM,

@@ -53,12 +53,12 @@ export declare class OrdersService {
     }>;
     findAll(): Promise<({
         user: {
-            id: string;
             firstName: string;
             lastName: string;
-            email: string;
             phoneNumber: string;
+            email: string;
             password: string;
+            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
@@ -148,12 +148,12 @@ export declare class OrdersService {
     })[]>;
     findOne(id: string): Promise<{
         user: {
-            id: string;
             firstName: string;
             lastName: string;
-            email: string;
             phoneNumber: string;
+            email: string;
             password: string;
+            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
