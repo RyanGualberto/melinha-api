@@ -25,6 +25,7 @@ export declare class ProductVariantsService {
             description: string;
             price: number;
             image: string;
+            cost: number;
             categoryId: string;
         };
         productVariantCategory: {
@@ -56,6 +57,7 @@ export declare class ProductVariantsService {
             description: string;
             price: number;
             image: string;
+            cost: number;
             categoryId: string;
         };
         productVariantCategory: {

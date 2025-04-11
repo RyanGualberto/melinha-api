@@ -56,6 +56,7 @@ model Product {
   image           String
   category        Category?        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId      String
+  cost            Float            @default(0)
   productVariants ProductVariant[]
   orderProduct    OrderProduct[]
   createdAt       DateTime         @default(now())

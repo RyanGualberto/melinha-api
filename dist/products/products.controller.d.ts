@@ -13,6 +13,7 @@ export declare class ProductsController {
         description: string;
         price: number;
         image: string;
+        cost: number;
         categoryId: string;
     }>;
     findAll(): Promise<({
@@ -32,6 +33,7 @@ export declare class ProductsController {
         description: string;
         price: number;
         image: string;
+        cost: number;
         categoryId: string;
     })[]>;
     findOne(id: string): Promise<{
@@ -51,6 +53,7 @@ export declare class ProductsController {
         description: string;
         price: number;
         image: string;
+        cost: number;
         categoryId: string;
     }>;
     update(id: string, updateProductDto: UpdateProductDto): Promise<{
@@ -62,6 +65,7 @@ export declare class ProductsController {
         description: string;
         price: number;
         image: string;
+        cost: number;
         categoryId: string;
     }>;
     remove(id: string): Promise<{
@@ -73,6 +77,7 @@ export declare class ProductsController {
         description: string;
         price: number;
         image: string;
+        cost: number;
         categoryId: string;
     }>;
 }

@@ -34,6 +34,7 @@ export declare class MenuController {
                 description: string;
                 price: number;
                 image: string;
+                cost: number;
                 categoryId: string;
             })[];
         } & {

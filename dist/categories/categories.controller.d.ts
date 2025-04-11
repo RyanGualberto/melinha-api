@@ -21,6 +21,7 @@ export declare class CategoriesController {
             description: string;
             price: number;
             image: string;
+            cost: number;
             categoryId: string;
         }[];
     } & {
@@ -40,6 +41,7 @@ export declare class CategoriesController {
             description: string;
             price: number;
             image: string;
+            cost: number;
             categoryId: string;
         }[];
     } & {

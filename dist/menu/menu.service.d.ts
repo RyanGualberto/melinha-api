@@ -34,6 +34,7 @@ export declare class MenuService {
                 description: string;
                 price: number;
                 image: string;
+                cost: number;
                 categoryId: string;
             })[];
         } & {

@@ -28,6 +28,9 @@ export class MenuService {
               },
             },
           },
+          orderBy: {
+            title: 'asc',
+          },
         },
       },
     });
