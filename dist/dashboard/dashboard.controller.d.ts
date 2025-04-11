@@ -3,6 +3,7 @@ export declare class DashboardController {
     private readonly dashboardService;
     constructor(dashboardService: DashboardService);
     findAll(): Promise<{
+        averageTicket: number;
         totalClients: number;
         ordersLast30Days: number;
         ordersLastWeekend: number;

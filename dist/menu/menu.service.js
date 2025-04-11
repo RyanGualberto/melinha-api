@@ -39,6 +39,9 @@ let MenuService = class MenuService {
                             },
                         },
                     },
+                    orderBy: {
+                        title: 'asc',
+                    },
                 },
             },
         });

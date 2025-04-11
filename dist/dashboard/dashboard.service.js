@@ -190,6 +190,7 @@ let DashboardService = class DashboardService {
         const bestWorstSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[0] || ['Nenhum', 0];
         const leastSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[sortedDistrictsLastWeekend.length - 1] || ['Nenhum', 0];
         return {
+            averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
             totalClients,
             ordersLast30Days,
             ordersLastWeekend,

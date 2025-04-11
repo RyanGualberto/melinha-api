@@ -4,8 +4,8 @@ export declare class SettingsController {
     private readonly settingsService;
     constructor(settingsService: SettingsService);
     findOne(): Promise<{
-        id: string;
         email: string;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
         deliveryTime: number;
@@ -15,8 +15,8 @@ export declare class SettingsController {
         orderMinimum: number;
     }>;
     update(updateSettingDto: UpdateSettingsDto): Promise<{
-        id: string;
         email: string;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
         deliveryTime: number;

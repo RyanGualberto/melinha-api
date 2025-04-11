@@ -3,6 +3,7 @@ export declare class DashboardService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
     findAll(): Promise<{
+        averageTicket: number;
         totalClients: number;
         ordersLast30Days: number;
         ordersLastWeekend: number;
