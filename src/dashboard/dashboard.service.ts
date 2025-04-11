@@ -237,6 +237,7 @@ export class DashboardService {
       bestWorstSellingNeighborhoodLastWeekend:
         bestWorstSellingNeighborhoodLastWeekend,
       leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
+      averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
     };
   }
 }
