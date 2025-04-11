@@ -223,6 +223,7 @@ export class DashboardService {
     ] || ['Nenhum', 0];
 
     return {
+      averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
       totalClients,
       ordersLast30Days,
       ordersLastWeekend,
@@ -237,7 +238,6 @@ export class DashboardService {
       bestWorstSellingNeighborhoodLastWeekend:
         bestWorstSellingNeighborhoodLastWeekend,
       leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
-      averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
     };
   }
 }
