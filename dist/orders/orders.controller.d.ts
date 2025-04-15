@@ -48,12 +48,12 @@ export declare class OrdersController {
     }>;
     findAll(): Promise<({
         user: {
+            id: string;
             firstName: string;
             lastName: string;
-            phoneNumber: string;
             email: string;
+            phoneNumber: string;
             password: string;
-            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;

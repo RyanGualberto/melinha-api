@@ -7,19 +7,19 @@ export declare class MenuController {
             products: ({
                 productVariants: ({
                     productVariantCategory: {
-                        name: string;
                         id: string;
+                        name: string;
                         createdAt: Date;
                         updatedAt: Date;
-                        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
                         max: number | null;
+                        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
                     };
                 } & {
-                    name: string;
                     id: string;
+                    name: string;
+                    status: import(".prisma/client").$Enums.ProductVariantStatus;
                     createdAt: Date;
                     updatedAt: Date;
-                    status: import(".prisma/client").$Enums.ProductVariantStatus;
                     price: number;
                     image: string;
                     productId: string;
@@ -27,22 +27,67 @@ export declare class MenuController {
                 })[];
             } & {
                 id: string;
+                description: string;
+                status: import(".prisma/client").$Enums.ProductStatus;
                 createdAt: Date;
                 updatedAt: Date;
-                status: import(".prisma/client").$Enums.ProductStatus;
                 title: string;
-                description: string;
                 price: number;
                 image: string;
-                cost: number;
                 categoryId: string;
+                cost: number;
             })[];
         } & {
-            name: string;
             id: string;
+            name: string;
+            description: string | null;
+            status: import(".prisma/client").$Enums.CategoryStatus;
             createdAt: Date;
             updatedAt: Date;
+        })[];
+    }>;
+    getAdminMenu(): Promise<{
+        categories: ({
+            products: ({
+                productVariants: ({
+                    productVariantCategory: {
+                        id: string;
+                        name: string;
+                        createdAt: Date;
+                        updatedAt: Date;
+                        max: number | null;
+                        type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+                    };
+                } & {
+                    id: string;
+                    name: string;
+                    status: import(".prisma/client").$Enums.ProductVariantStatus;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    price: number;
+                    image: string;
+                    productId: string;
+                    productVariantCategoryId: string | null;
+                })[];
+            } & {
+                id: string;
+                description: string;
+                status: import(".prisma/client").$Enums.ProductStatus;
+                createdAt: Date;
+                updatedAt: Date;
+                title: string;
+                price: number;
+                image: string;
+                categoryId: string;
+                cost: number;
+            })[];
+        } & {
+            id: string;
+            name: string;
             description: string | null;
+            status: import(".prisma/client").$Enums.CategoryStatus;
+            createdAt: Date;
+            updatedAt: Date;
         })[];
     }>;
 }

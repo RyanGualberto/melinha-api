@@ -66,12 +66,13 @@ model Product {
 }
 
 model Category {
-  id          String    @id @default(uuid())
+  id          String         @id @default(uuid())
   name        String
   description String?
+  status      CategoryStatus @default(ACTIVE)
   products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   @@map("categories")
 }
@@ -206,4 +207,9 @@ enum ProductVariantStatus {
 enum ProductVariantCategoryType {
   SINGLE
   MULTIPLE
+}
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
 }

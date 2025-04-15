@@ -44,6 +44,33 @@ let MenuService = class MenuService {
                     },
                 },
             },
+            where: {
+                status: {
+                    not: client_1.ProductStatus.INACTIVE,
+                },
+            },
+        });
+        return { categories };
+    }
+    async getAdminMenu() {
+        const categories = await this.prismaService.category.findMany({
+            include: {
+                products: {
+                    include: {
+                        productVariants: {
+                            include: {
+                                productVariantCategory: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        title: 'asc',
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'asc',
+            },
         });
         return { categories };
     }

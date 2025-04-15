@@ -11,10 +11,10 @@ export declare class UsersService {
         orders: {
             createdAt: Date;
         }[];
+        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -23,10 +23,10 @@ export declare class UsersService {
     }[]>;
     findOne(id: string): Promise<{
         email: string;
+        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -35,12 +35,12 @@ export declare class UsersService {
     }>;
     findByEmail(email: string): Promise<User | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
+        id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
         email: string;
+        phoneNumber: string;
         password: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -48,12 +48,12 @@ export declare class UsersService {
         updatedAt: Date;
     }>;
     remove(id: string): Promise<{
+        id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
         email: string;
+        phoneNumber: string;
         password: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;

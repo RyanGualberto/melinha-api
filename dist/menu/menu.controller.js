@@ -15,12 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MenuController = void 0;
 const common_1 = require("@nestjs/common");
 const menu_service_1 = require("./menu.service");
+const auth_guard_1 = require("../auth/auth.guard");
 let MenuController = class MenuController {
     constructor(menuService) {
         this.menuService = menuService;
     }
     async getMenu(query) {
         return await this.menuService.getMenu(query);
+    }
+    async getAdminMenu() {
+        return await this.menuService.getAdminMenu();
     }
 };
 exports.MenuController = MenuController;
@@ -31,6 +35,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], MenuController.prototype, "getMenu", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Get)('admin'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], MenuController.prototype, "getAdminMenu", null);
 exports.MenuController = MenuController = __decorate([
     (0, common_1.Controller)('menu'),
     __metadata("design:paramtypes", [menu_service_1.MenuService])

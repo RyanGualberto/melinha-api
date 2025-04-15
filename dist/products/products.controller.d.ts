@@ -22,6 +22,7 @@ export declare class ProductsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            status: import(".prisma/client").$Enums.CategoryStatus;
             description: string | null;
         };
     } & {
@@ -42,6 +43,7 @@ export declare class ProductsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
+            status: import(".prisma/client").$Enums.CategoryStatus;
             description: string | null;
         };
     } & {

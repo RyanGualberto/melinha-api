@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { MenuService } from './menu.service';
+import { AdminGuard } from 'src/auth/auth.guard';
 
 @Controller('menu')
 export class MenuController {
@@ -8,5 +9,11 @@ export class MenuController {
   @Get()
   async getMenu(@Query('query') query: string) {
     return await this.menuService.getMenu(query);
+  }
+
+  @UseGuards(AdminGuard)
+  @Get('admin')
+  async getAdminMenu() {
+    return await this.menuService.getAdminMenu();
   }
 }
