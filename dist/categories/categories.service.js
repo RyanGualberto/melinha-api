@@ -46,6 +46,18 @@ let CategoriesService = class CategoriesService {
             data: updateCategoryDto,
         });
     }
+    async updateOrder(data) {
+        return await Promise.all(data.map(async (item) => {
+            return await this.prismaService.category.update({
+                where: {
+                    id: item.id,
+                },
+                data: {
+                    index: item.index,
+                },
+            });
+        }));
+    }
     async remove(id) {
         return await this.prismaService.category.delete({
             where: {

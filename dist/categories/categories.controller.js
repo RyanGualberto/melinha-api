@@ -31,6 +31,9 @@ let CategoriesController = class CategoriesController {
     async findOne(id) {
         return await this.categoriesService.findOne(id);
     }
+    async updateOrder(updateCategoryOrderDto) {
+        return await this.categoriesService.updateOrder(updateCategoryOrderDto);
+    }
     async update(id, updateCategoryDto) {
         return await this.categoriesService.update(id, updateCategoryDto);
     }
@@ -63,6 +66,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Put)('order'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], CategoriesController.prototype, "updateOrder", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
     (0, common_1.Patch)(':id'),

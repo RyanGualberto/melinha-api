@@ -9,6 +9,7 @@ export declare class CategoriesService {
         name: string;
         description: string | null;
         status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -17,6 +18,7 @@ export declare class CategoriesService {
             id: string;
             description: string;
             status: import(".prisma/client").$Enums.ProductStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -30,6 +32,7 @@ export declare class CategoriesService {
         name: string;
         description: string | null;
         status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
         createdAt: Date;
         updatedAt: Date;
     })[]>;
@@ -38,6 +41,7 @@ export declare class CategoriesService {
             id: string;
             description: string;
             status: import(".prisma/client").$Enums.ProductStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
             title: string;
@@ -51,6 +55,7 @@ export declare class CategoriesService {
         name: string;
         description: string | null;
         status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -59,14 +64,28 @@ export declare class CategoriesService {
         name: string;
         description: string | null;
         status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
+    updateOrder(data: {
+        id: string;
+        index: number;
+    }[]): Promise<{
+        id: string;
+        name: string;
+        description: string | null;
+        status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
     remove(id: string): Promise<{
         id: string;
         name: string;
         description: string | null;
         status: import(".prisma/client").$Enums.CategoryStatus;
+        index: number;
         createdAt: Date;
         updatedAt: Date;
     }>;

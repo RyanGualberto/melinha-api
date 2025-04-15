@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -35,6 +36,19 @@ export class CategoriesController {
   @HttpCode(200)
   async findOne(@Param('id') id: string) {
     return await this.categoriesService.findOne(id);
+  }
+
+  @UseGuards(AdminGuard)
+  @Put('order')
+  @HttpCode(200)
+  async updateOrder(
+    @Body()
+    updateCategoryOrderDto: {
+      id: string;
+      index: number;
+    }[],
+  ) {
+    return await this.categoriesService.updateOrder(updateCategoryOrderDto);
   }
 
   @UseGuards(AdminGuard)

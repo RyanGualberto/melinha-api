@@ -27,6 +27,7 @@ export declare class ProductVariantsController {
             image: string;
             cost: number;
             categoryId: string;
+            index: number;
         };
         productVariantCategory: {
             name: string;
@@ -59,6 +60,7 @@ export declare class ProductVariantsController {
             image: string;
             cost: number;
             categoryId: string;
+            index: number;
         };
         productVariantCategory: {
             name: string;

@@ -29,6 +29,7 @@ export declare class MenuService {
                 id: string;
                 description: string;
                 status: import(".prisma/client").$Enums.ProductStatus;
+                index: number;
                 createdAt: Date;
                 updatedAt: Date;
                 title: string;
@@ -42,6 +43,7 @@ export declare class MenuService {
             name: string;
             description: string | null;
             status: import(".prisma/client").$Enums.CategoryStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
         })[];
@@ -73,6 +75,7 @@ export declare class MenuService {
                 id: string;
                 description: string;
                 status: import(".prisma/client").$Enums.ProductStatus;
+                index: number;
                 createdAt: Date;
                 updatedAt: Date;
                 title: string;
@@ -86,6 +89,7 @@ export declare class MenuService {
             name: string;
             description: string | null;
             status: import(".prisma/client").$Enums.CategoryStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
         })[];

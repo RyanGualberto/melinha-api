@@ -40,7 +40,7 @@ let MenuService = class MenuService {
                         },
                     },
                     orderBy: {
-                        title: 'asc',
+                        index: 'asc',
                     },
                 },
             },
@@ -48,6 +48,9 @@ let MenuService = class MenuService {
                 status: {
                     not: client_1.ProductStatus.INACTIVE,
                 },
+            },
+            orderBy: {
+                index: 'asc',
             },
         });
         return { categories };
@@ -64,12 +67,12 @@ let MenuService = class MenuService {
                         },
                     },
                     orderBy: {
-                        title: 'asc',
+                        index: 'asc',
                     },
                 },
             },
             orderBy: {
-                createdAt: 'asc',
+                index: 'asc',
             },
         });
         return { categories };

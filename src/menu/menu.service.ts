@@ -29,7 +29,7 @@ export class MenuService {
             },
           },
           orderBy: {
-            title: 'asc',
+            index: 'asc',
           },
         },
       },
@@ -37,6 +37,9 @@ export class MenuService {
         status: {
           not: ProductStatus.INACTIVE,
         },
+      },
+      orderBy: {
+        index: 'asc',
       },
     });
 
@@ -55,12 +58,12 @@ export class MenuService {
             },
           },
           orderBy: {
-            title: 'asc',
+            index: 'asc',
           },
         },
       },
       orderBy: {
-        createdAt: 'asc',
+        index: 'asc',
       },
     });
 

@@ -15,6 +15,7 @@ export declare class ProductsService {
         image: string;
         cost: number;
         categoryId: string;
+        index: number;
     }>;
     findAll(): Promise<({
         category: {
@@ -24,6 +25,7 @@ export declare class ProductsService {
             updatedAt: Date;
             status: import(".prisma/client").$Enums.CategoryStatus;
             description: string | null;
+            index: number;
         };
     } & {
         id: string;
@@ -36,6 +38,7 @@ export declare class ProductsService {
         image: string;
         cost: number;
         categoryId: string;
+        index: number;
     })[]>;
     findOne(id: string): Promise<{
         category: {
@@ -45,6 +48,7 @@ export declare class ProductsService {
             updatedAt: Date;
             status: import(".prisma/client").$Enums.CategoryStatus;
             description: string | null;
+            index: number;
         };
     } & {
         id: string;
@@ -57,6 +61,7 @@ export declare class ProductsService {
         image: string;
         cost: number;
         categoryId: string;
+        index: number;
     }>;
     update(id: string, updateProductDto: UpdateProductDto): Promise<{
         id: string;
@@ -69,6 +74,7 @@ export declare class ProductsService {
         image: string;
         cost: number;
         categoryId: string;
+        index: number;
     }>;
     remove(id: string): Promise<{
         id: string;
@@ -81,5 +87,6 @@ export declare class ProductsService {
         image: string;
         cost: number;
         categoryId: string;
+        index: number;
     }>;
 }
