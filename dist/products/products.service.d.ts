@@ -6,87 +6,103 @@ export declare class ProductsService {
     constructor(prismaService: PrismaService);
     create(createProductDto: CreateProductDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.ProductStatus;
         title: string;
         description: string;
         price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
         image: string;
-        cost: number;
         categoryId: string;
+        cost: number;
         index: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     findAll(): Promise<({
         category: {
-            name: string;
             id: string;
+            description: string | null;
+            status: import(".prisma/client").$Enums.CategoryStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.CategoryStatus;
-            description: string | null;
-            index: number;
+            name: string;
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.ProductStatus;
         title: string;
         description: string;
         price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
         image: string;
-        cost: number;
         categoryId: string;
+        cost: number;
         index: number;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findOne(id: string): Promise<{
         category: {
-            name: string;
             id: string;
+            description: string | null;
+            status: import(".prisma/client").$Enums.CategoryStatus;
+            index: number;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.CategoryStatus;
-            description: string | null;
-            index: number;
+            name: string;
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.ProductStatus;
         title: string;
         description: string;
         price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
         image: string;
-        cost: number;
         categoryId: string;
+        cost: number;
         index: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(id: string, updateProductDto: UpdateProductDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.ProductStatus;
         title: string;
         description: string;
         price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
         image: string;
-        cost: number;
         categoryId: string;
+        cost: number;
         index: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
+    updateOrder(updateProductOrderDto: {
+        id: string;
+        index: number;
+    }[]): Promise<{
+        id: string;
+        title: string;
+        description: string;
+        price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
+        image: string;
+        categoryId: string;
+        cost: number;
+        index: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
     remove(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.ProductStatus;
         title: string;
         description: string;
         price: number;
+        status: import(".prisma/client").$Enums.ProductStatus;
         image: string;
-        cost: number;
         categoryId: string;
+        cost: number;
         index: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

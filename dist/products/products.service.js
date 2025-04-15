@@ -55,6 +55,19 @@ let ProductsService = class ProductsService {
             },
         });
     }
+    async updateOrder(updateProductOrderDto) {
+        const promises = updateProductOrderDto.map((product) => {
+            return this.prismaService.product.update({
+                where: {
+                    id: product.id,
+                },
+                data: {
+                    index: product.index,
+                },
+            });
+        });
+        return await Promise.all(promises);
+    }
     async remove(id) {
         return await this.prismaService.product.delete({
             where: {

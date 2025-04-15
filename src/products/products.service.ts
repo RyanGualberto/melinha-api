@@ -49,6 +49,25 @@ export class ProductsService {
     });
   }
 
+  async updateOrder(
+    updateProductOrderDto: {
+      id: string;
+      index: number;
+    }[],
+  ) {
+    const promises = updateProductOrderDto.map((product) => {
+      return this.prismaService.product.update({
+        where: {
+          id: product.id,
+        },
+        data: {
+          index: product.index,
+        },
+      });
+    });
+    return await Promise.all(promises);
+  }
+
   async remove(id: string) {
     return await this.prismaService.product.delete({
       where: {

@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -27,27 +28,39 @@ export class ProductsController {
 
   @Get()
   @HttpCode(200)
-  findAll() {
-    return this.productsService.findAll();
+  async findAll() {
+    return await this.productsService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.productsService.findOne(id);
   }
 
   @UseGuards(AdminGuard)
   @Patch(':id')
   @HttpCode(200)
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return await this.productsService.update(id, updateProductDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Put('order')
+  @HttpCode(200)
+  async updateOrder(
+    @Body() updateProductOrderDto: { id: string; index: number }[],
+  ) {
+    return await this.productsService.updateOrder(updateProductOrderDto);
   }
 
   @UseGuards(AdminGuard)
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.productsService.remove(id);
   }
 }
