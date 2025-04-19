@@ -6,23 +6,34 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     create(data: CreateUserDto): Promise<User>;
-    findAll(): Promise<{
-        email: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        id: string;
-        createdAt: Date;
-        orders: {
+    findAllPaginated({ page, perPage, clientName, }: {
+        page?: number;
+        perPage?: number;
+        clientName?: string;
+    }): Promise<{
+        data: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string;
             createdAt: Date;
+            orders: {
+                createdAt: Date;
+            }[];
         }[];
-    }[]>;
+        pagination: {
+            page: number;
+            perPage: number;
+            total: number;
+        };
+    }>;
     findOne(id: string): Promise<{
         email: string;
+        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        id: string;
         role: string;
         createdAt: Date;
     }>;
@@ -33,12 +44,12 @@ export declare class UsersService {
         lastName: string;
     } | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
+        id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
         email: string;
+        phoneNumber: string;
         password: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -46,12 +57,12 @@ export declare class UsersService {
         updatedAt: Date;
     }>;
     remove(id: string): Promise<{
+        id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
         email: string;
+        phoneNumber: string;
         password: string;
-        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;

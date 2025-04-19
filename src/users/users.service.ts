@@ -29,8 +29,33 @@ export class UsersService {
     return record;
   }
 
-  async findAll() {
+  async findAllPaginated({
+    page = 0,
+    perPage = 10,
+    clientName,
+  }: {
+    page?: number;
+    perPage?: number;
+    clientName?: string;
+  }) {
+    const skip = page * perPage;
+
     const users = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            firstName: { contains: clientName, mode: 'insensitive' },
+          },
+          {
+            lastName: { contains: clientName, mode: 'insensitive' },
+          },
+        ],
+      },
+      skip,
+      take: perPage,
+      orderBy: {
+        createdAt: 'desc',
+      },
       select: {
         email: true,
         firstName: true,
@@ -47,16 +72,28 @@ export class UsersService {
           select: { createdAt: true },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
     });
-    const usersWithoutEmail = users.map((user) => ({
-      ...user,
-      email: this.maskEmail(user.email),
-    }));
 
-    return usersWithoutEmail;
+    const aggregates = await this.prisma.user.aggregate({
+      where: {
+        OR: [
+          {
+            firstName: { contains: clientName, mode: 'insensitive' },
+            lastName: { contains: clientName, mode: 'insensitive' },
+          },
+        ],
+      },
+      _count: true,
+    });
+
+    return {
+      data: users,
+      pagination: {
+        page,
+        perPage,
+        total: aggregates._count,
+      },
+    };
   }
 
   async findOne(id: string) {

@@ -18,19 +18,21 @@ export declare class OrdersController {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     } & {
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -44,12 +46,11 @@ export declare class OrdersController {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     findAll(page: string, perPage: string, customerName: string, status: 'all' | keyof typeof OrderStatus, paymentMethod: 'all' | 'money' | 'card' | 'pix', deliveryMethod: 'delivery' | 'withdrawal' | 'all', period: 'all' | 'today' | 'yesterday' | 'last3Days' | 'lastMonth'): Promise<{
         data: {
             id: string;
+            createdAt: Date;
             isWithdrawal: boolean;
             addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
             userSnapshot: import("@prisma/client/runtime/library").JsonValue;
@@ -61,7 +62,6 @@ export declare class OrdersController {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number;
-            createdAt: Date;
             products: ({
                 variants: {
                     id: string;
@@ -73,16 +73,16 @@ export declare class OrdersController {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         }[];
         pagination: {
@@ -98,26 +98,26 @@ export declare class OrdersController {
     findOrdersInProgress(): Promise<{
         waiting: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -138,19 +138,21 @@ export declare class OrdersController {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -164,31 +166,29 @@ export declare class OrdersController {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
         })[];
         inProgress: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -209,19 +209,21 @@ export declare class OrdersController {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -235,31 +237,29 @@ export declare class OrdersController {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
         })[];
         inDelivery: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -280,19 +280,21 @@ export declare class OrdersController {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -306,12 +308,11 @@ export declare class OrdersController {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
         })[];
     }>;
     findNewOrders(): Promise<{
         id: string;
+        createdAt: Date;
         isWithdrawal: boolean;
         addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
@@ -323,7 +324,6 @@ export declare class OrdersController {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number;
-        createdAt: Date;
         products: ({
             variants: {
                 id: string;
@@ -335,20 +335,21 @@ export declare class OrdersController {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     }[]>;
     listUserOrders(req: Request): Promise<{
         id: string;
+        createdAt: Date;
         isWithdrawal: boolean;
         addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
@@ -359,7 +360,6 @@ export declare class OrdersController {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number;
-        createdAt: Date;
         products: ({
             variants: {
                 id: string;
@@ -371,16 +371,16 @@ export declare class OrdersController {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     }[]>;
     update(id: string, updateOrderDto: UpdateOrderDto): Promise<{
@@ -395,19 +395,21 @@ export declare class OrdersController {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     } & {
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -421,11 +423,11 @@ export declare class OrdersController {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     remove(id: string): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -439,7 +441,5 @@ export declare class OrdersController {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

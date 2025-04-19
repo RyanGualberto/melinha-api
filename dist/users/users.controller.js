@@ -21,8 +21,12 @@ let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    async findAll() {
-        return await this.usersService.findAll();
+    async findAll(page, perPage, clientName) {
+        return await this.usersService.findAllPaginated({
+            page: Number(page),
+            perPage: Number(perPage),
+            clientName,
+        });
     }
     async update(id, updateUserDto) {
         return await this.usersService.update(id, updateUserDto);
@@ -34,9 +38,11 @@ let UsersController = class UsersController {
 exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('perPage')),
+    __param(2, (0, common_1.Query)('clientName')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([

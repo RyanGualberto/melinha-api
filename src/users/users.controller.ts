@@ -7,6 +7,7 @@ import {
   Delete,
   UseGuards,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -18,9 +19,16 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @HttpCode(200)
-  async findAll() {
-    return await this.usersService.findAll();
+  async findAll(
+    @Query('page') page: string,
+    @Query('perPage') perPage: string,
+    @Query('clientName') clientName: string,
+  ) {
+    return await this.usersService.findAllPaginated({
+      page: Number(page),
+      perPage: Number(perPage),
+      clientName,
+    });
   }
 
   @Patch(':id')

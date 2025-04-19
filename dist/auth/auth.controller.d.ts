@@ -9,12 +9,12 @@ export declare class AuthController {
     constructor(authService: AuthService, mailService: MailService);
     register(createUserDto: CreateUserDto): Promise<{
         user: {
+            id: string;
             firstName: string;
             lastName: string;
-            phoneNumber: string;
             email: string;
+            phoneNumber: string;
             password: string;
-            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
@@ -25,10 +25,10 @@ export declare class AuthController {
     }>;
     me(req: Request): Promise<{
         email: string;
+        id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        id: string;
         role: string;
         createdAt: Date;
     }>;
