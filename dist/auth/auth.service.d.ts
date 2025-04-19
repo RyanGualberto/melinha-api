@@ -13,16 +13,16 @@ export declare class AuthService {
     register(createUserDto: CreateUserDto): Promise<{
         user: {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phoneNumber: string;
             password: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         accessToken: string;
     }>;
@@ -38,11 +38,11 @@ export declare class AuthService {
     me(id: string): Promise<{
         email: string;
         id: string;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
         role: string;
-        createdAt: Date;
     }>;
     requestPasswordReset(email: string): Promise<{
         message: string;

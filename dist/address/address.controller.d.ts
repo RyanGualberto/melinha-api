@@ -6,12 +6,12 @@ export declare class AddressController {
     constructor(addressService: AddressService);
     create(req: Express.Request, createAddressDto: CreateAddressDto): Promise<{
         number: string;
-        address: string;
-        name: string;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
+        address: string;
+        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -23,12 +23,12 @@ export declare class AddressController {
     }>;
     findAll(req: Express.Request): Promise<{
         number: string;
-        address: string;
-        name: string;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
+        address: string;
+        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -40,12 +40,12 @@ export declare class AddressController {
     }[]>;
     findOne(req: Express.Request, id: string): Promise<{
         number: string;
-        address: string;
-        name: string;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
+        address: string;
+        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -57,12 +57,12 @@ export declare class AddressController {
     }>;
     update(req: Express.Request, id: string, updateAddressDto: UpdateAddressDto): Promise<{
         number: string;
-        address: string;
-        name: string;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
+        address: string;
+        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -74,12 +74,12 @@ export declare class AddressController {
     }>;
     remove(req: Express.Request, id: string): Promise<{
         number: string;
-        address: string;
-        name: string;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
+        address: string;
+        name: string;
         complement: string | null;
         reference: string | null;
         district: string;

@@ -6,38 +6,38 @@ export declare class UsersController {
     findAll(): Promise<{
         email: string;
         id: string;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        createdAt: Date;
         orders: {
             createdAt: Date;
         }[];
     }[]>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
         password: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     remove(id: string): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
         password: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

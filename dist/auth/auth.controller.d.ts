@@ -10,27 +10,27 @@ export declare class AuthController {
     register(createUserDto: CreateUserDto): Promise<{
         user: {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phoneNumber: string;
             password: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         accessToken: string;
     }>;
     me(req: Request): Promise<{
         email: string;
         id: string;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
         role: string;
-        createdAt: Date;
     }>;
     login(loginAuthDto: LoginAuthDto): Promise<{
         user: {

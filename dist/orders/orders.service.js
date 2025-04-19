@@ -105,6 +105,39 @@ let OrdersService = class OrdersService {
             },
         });
     }
+    async findNewOrders() {
+        const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+        return await this.prismaService.order.findMany({
+            select: {
+                products: {
+                    include: {
+                        variants: true,
+                    },
+                },
+                addressSnapshot: true,
+                id: true,
+                isWithdrawal: true,
+                discount: true,
+                observation: true,
+                deliveryCost: true,
+                createdAt: true,
+                deliveryTime: true,
+                status: true,
+                total: true,
+                userSnapshot: true,
+                paymentChange: true,
+                paymentMethod: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            where: {
+                createdAt: {
+                    gte: oneMinuteAgo,
+                },
+            },
+        });
+    }
     async listUserOrders(userId) {
         return await this.prismaService.order.findMany({
             where: {

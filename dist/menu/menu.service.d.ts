@@ -5,33 +5,33 @@ export declare class MenuService {
     getMenu(query: string): Promise<{
         categories: {
             id: string;
-            name: string;
-            description: string;
             status: import(".prisma/client").$Enums.CategoryStatus;
-            index: number;
             products: {
                 id: string;
-                description: string;
                 status: import(".prisma/client").$Enums.ProductStatus;
-                index: number;
-                title: string;
                 price: number;
+                title: string;
+                description: string;
                 image: string;
+                index: number;
                 productVariants: {
                     id: string;
-                    name: string;
                     status: import(".prisma/client").$Enums.ProductVariantStatus;
                     price: number;
                     productId: string;
-                    productVariantCategoryId: string;
+                    name: string;
                     productVariantCategory: {
                         id: string;
                         name: string;
-                        max: number;
                         type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+                        max: number;
                     };
+                    productVariantCategoryId: string;
                 }[];
             }[];
+            description: string;
+            index: number;
+            name: string;
         }[];
     }>;
     getAdminMenu(): Promise<{
@@ -40,44 +40,44 @@ export declare class MenuService {
                 productVariants: ({
                     productVariantCategory: {
                         id: string;
-                        name: string;
                         createdAt: Date;
                         updatedAt: Date;
-                        max: number | null;
+                        name: string;
                         type: import(".prisma/client").$Enums.ProductVariantCategoryType;
+                        max: number | null;
                     };
                 } & {
                     id: string;
-                    name: string;
                     status: import(".prisma/client").$Enums.ProductVariantStatus;
                     createdAt: Date;
                     updatedAt: Date;
                     price: number;
-                    image: string;
                     productId: string;
+                    image: string;
+                    name: string;
                     productVariantCategoryId: string | null;
                 })[];
             } & {
                 id: string;
-                description: string;
                 status: import(".prisma/client").$Enums.ProductStatus;
-                index: number;
                 createdAt: Date;
                 updatedAt: Date;
-                title: string;
                 price: number;
+                title: string;
+                description: string;
                 image: string;
                 categoryId: string;
                 cost: number;
+                index: number;
             })[];
         } & {
             id: string;
-            name: string;
-            description: string | null;
             status: import(".prisma/client").$Enums.CategoryStatus;
-            index: number;
             createdAt: Date;
             updatedAt: Date;
+            description: string | null;
+            index: number;
+            name: string;
         })[];
     }>;
 }

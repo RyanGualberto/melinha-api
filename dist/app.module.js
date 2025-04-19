@@ -25,13 +25,7 @@ const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
 const path_1 = require("path");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
-const use_logging_1 = require("./config/use-logging");
 let AppModule = class AppModule {
-    configure(consumer) {
-        consumer
-            .apply(use_logging_1.LoggerMiddleware)
-            .forRoutes({ path: '*', method: common_1.RequestMethod.ALL });
-    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([

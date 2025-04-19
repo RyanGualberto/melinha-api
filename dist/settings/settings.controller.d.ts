@@ -4,22 +4,22 @@ export declare class SettingsController {
     private readonly settingsService;
     constructor(settingsService: SettingsService);
     findOne(): Promise<{
-        email: string;
         id: string;
         deliveryTime: number;
         instagram: string;
         whatsapp: string;
+        email: string;
         opened: boolean;
         orderMinimum: number;
     }>;
     update(updateSettingDto: UpdateSettingsDto): Promise<{
-        email: string;
         id: string;
+        deliveryTime: number;
         createdAt: Date;
         updatedAt: Date;
-        deliveryTime: number;
         instagram: string;
         whatsapp: string;
+        email: string;
         opened: boolean;
         orderMinimum: number;
     }>;

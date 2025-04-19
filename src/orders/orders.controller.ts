@@ -33,6 +33,12 @@ export class OrdersController {
     return await this.ordersService.findAll();
   }
 
+  @UseGuards(AdminGuard)
+  @Get('new')
+  async findNewOrders() {
+    return await this.ordersService.findNewOrders();
+  }
+
   @UseGuards(AuthGuard)
   @Get('current-user')
   async listUserOrders(@Req() req: Request) {
