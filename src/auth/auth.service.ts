@@ -50,6 +50,7 @@ export class AuthService {
 
   async me(id: string) {
     const user = await this.usersService.findOne(id);
+
     return user;
   }
 

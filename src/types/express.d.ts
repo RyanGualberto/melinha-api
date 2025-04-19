@@ -7,7 +7,6 @@ declare namespace Express {
       lastName: string;
       email: string;
       phoneNumber: string;
-      password: string | undefined;
       createdAt: Date;
       updatedAt: Date;
     };

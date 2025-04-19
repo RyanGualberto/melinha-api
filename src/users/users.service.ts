@@ -123,6 +123,7 @@ export class UsersService {
       where: { email: email },
       select: {
         id: true,
+        phoneNumber: true,
         firstName: true,
         lastName: true,
         email: true,
