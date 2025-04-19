@@ -24,9 +24,6 @@ let UsersController = class UsersController {
     async findAll() {
         return await this.usersService.findAll();
     }
-    async findOne(id) {
-        return await this.usersService.findOne(id);
-    }
     async update(id, updateUserDto) {
         return await this.usersService.update(id, updateUserDto);
     }
@@ -42,14 +39,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.HttpCode)(200),

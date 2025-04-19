@@ -28,17 +28,10 @@ export declare class AuthService {
     }>;
     login(loginAuthDto: LoginAuthDto): Promise<{
         user: {
-            id: string;
+            email: string;
+            password: string;
             firstName: string;
             lastName: string;
-            email: string;
-            phoneNumber: string;
-            password: string;
-            role: string;
-            resetToken: string | null;
-            resetExpires: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         accessToken: string;
     }>;
@@ -49,10 +42,7 @@ export declare class AuthService {
         lastName: string;
         phoneNumber: string;
         role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
         createdAt: Date;
-        updatedAt: Date;
     }>;
     requestPasswordReset(email: string): Promise<{
         message: string;

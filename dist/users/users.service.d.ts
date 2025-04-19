@@ -8,18 +8,14 @@ export declare class UsersService {
     create(data: CreateUserDto): Promise<User>;
     findAll(): Promise<{
         email: string;
-        orders: {
-            createdAt: Date;
-        }[];
         id: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
-        role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
         createdAt: Date;
-        updatedAt: Date;
+        orders: {
+            createdAt: Date;
+        }[];
     }[]>;
     findOne(id: string): Promise<{
         email: string;
@@ -28,12 +24,14 @@ export declare class UsersService {
         lastName: string;
         phoneNumber: string;
         role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
         createdAt: Date;
-        updatedAt: Date;
     }>;
-    findByEmail(email: string): Promise<User | null>;
+    findByEmail(email: string): Promise<{
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+    } | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         id: string;
         firstName: string;

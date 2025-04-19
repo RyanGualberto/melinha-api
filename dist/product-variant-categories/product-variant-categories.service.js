@@ -25,11 +25,24 @@ let ProductVariantCategoriesService = class ProductVariantCategoriesService {
         });
     }
     async findAll() {
-        return await this.prismaService.productVariantCategory.findMany();
+        return await this.prismaService.productVariantCategory.findMany({
+            select: {
+                id: true,
+                max: true,
+                name: true,
+                type: true,
+            },
+        });
     }
     async findOne(id) {
         return await this.prismaService.productVariantCategory.findUnique({
             where: { id },
+            select: {
+                id: true,
+                max: true,
+                name: true,
+                type: true,
+            },
         });
     }
     async update(id, updateProductVariantCategoryDto) {

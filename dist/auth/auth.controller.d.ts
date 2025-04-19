@@ -30,24 +30,14 @@ export declare class AuthController {
         lastName: string;
         phoneNumber: string;
         role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
         createdAt: Date;
-        updatedAt: Date;
     }>;
     login(loginAuthDto: LoginAuthDto): Promise<{
         user: {
-            id: string;
+            email: string;
+            password: string;
             firstName: string;
             lastName: string;
-            email: string;
-            phoneNumber: string;
-            password: string;
-            role: string;
-            resetToken: string | null;
-            resetExpires: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         accessToken: string;
     }>;

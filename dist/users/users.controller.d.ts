@@ -5,31 +5,15 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     findAll(): Promise<{
         email: string;
+        id: string;
+        firstName: string;
+        lastName: string;
+        phoneNumber: string;
+        createdAt: Date;
         orders: {
             createdAt: Date;
         }[];
-        id: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
-        createdAt: Date;
-        updatedAt: Date;
     }[]>;
-    findOne(id: string): Promise<{
-        email: string;
-        id: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        role: string;
-        resetToken: string | null;
-        resetExpires: Date | null;
-        createdAt: Date;
-        updatedAt: Date;
-    }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         id: string;
         firstName: string;

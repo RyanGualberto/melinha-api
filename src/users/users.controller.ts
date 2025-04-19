@@ -23,12 +23,6 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get(':id')
-  @HttpCode(200)
-  async findOne(@Param('id') id: string) {
-    return await this.usersService.findOne(id);
-  }
-
   @Patch(':id')
   @HttpCode(200)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

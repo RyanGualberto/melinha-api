@@ -8,7 +8,12 @@ export class MenuService {
 
   async getMenu(query: string) {
     const categories = await this.prismaService.category.findMany({
-      include: {
+      select: {
+        id: true,
+        index: true,
+        name: true,
+        description: true,
+        status: true,
         products: {
           where: {
             status: {
@@ -16,15 +21,35 @@ export class MenuService {
             },
             title: { contains: query, mode: 'insensitive' },
           },
-          include: {
+          select: {
+            image: true,
+            description: true,
+            id: true,
+            price: true,
+            status: true,
+            title: true,
+            index: true,
             productVariants: {
               where: {
                 status: {
                   not: ProductStatus.INACTIVE,
                 },
               },
-              include: {
-                productVariantCategory: true,
+              select: {
+                id: true,
+                productId: true,
+                name: true,
+                price: true,
+                status: true,
+                productVariantCategoryId: true,
+                productVariantCategory: {
+                  select: {
+                    id: true,
+                    name: true,
+                    max: true,
+                    type: true,
+                  },
+                },
               },
             },
           },

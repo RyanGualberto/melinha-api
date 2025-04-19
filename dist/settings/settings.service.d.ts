@@ -4,10 +4,8 @@ export declare class SettingsService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
     findOne(): Promise<{
-        id: string;
         email: string;
-        createdAt: Date;
-        updatedAt: Date;
+        id: string;
         deliveryTime: number;
         instagram: string;
         whatsapp: string;
@@ -15,8 +13,8 @@ export declare class SettingsService {
         orderMinimum: number;
     }>;
     update(updateSettingsDto: UpdateSettingsDto): Promise<{
-        id: string;
         email: string;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
         deliveryTime: number;

@@ -31,7 +31,13 @@ export class UsersService {
 
   async findAll() {
     const users = await this.prisma.user.findMany({
-      include: {
+      select: {
+        email: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        createdAt: true,
+        id: true,
         orders: {
           where: {
             status: {
@@ -40,9 +46,6 @@ export class UsersService {
           },
           select: { createdAt: true },
         },
-      },
-      omit: {
-        password: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -59,17 +62,36 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
-      omit: {
-        password: true,
+      select: {
+        id: true,
+        createdAt: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phoneNumber: true,
+        role: true,
       },
     });
 
     return { ...user, email: this.maskEmail(user.email) };
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<{
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+  } | null> {
     const record = await this.prisma.user.findUnique({
       where: { email: email },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: true,
+        role: true,
+      },
     });
     if (!record) return null;
 

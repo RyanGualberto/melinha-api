@@ -30,8 +30,21 @@ let ProductsService = class ProductsService {
     }
     async findAll() {
         return await this.prismaService.product.findMany({
-            include: {
-                category: true,
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                cost: true,
+                price: true,
+                status: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        status: true,
+                        description: true,
+                    },
+                },
             },
         });
     }
@@ -40,8 +53,21 @@ let ProductsService = class ProductsService {
             where: {
                 id,
             },
-            include: {
-                category: true,
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                cost: true,
+                price: true,
+                status: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        status: true,
+                        description: true,
+                    },
+                },
             },
         });
     }

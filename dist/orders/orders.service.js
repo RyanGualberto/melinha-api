@@ -80,13 +80,25 @@ let OrdersService = class OrdersService {
     }
     async findAll() {
         return await this.prismaService.order.findMany({
-            include: {
-                user: true,
+            select: {
                 products: {
                     include: {
                         variants: true,
                     },
                 },
+                addressSnapshot: true,
+                id: true,
+                isWithdrawal: true,
+                discount: true,
+                observation: true,
+                deliveryCost: true,
+                createdAt: true,
+                deliveryTime: true,
+                status: true,
+                total: true,
+                userSnapshot: true,
+                paymentChange: true,
+                paymentMethod: true,
             },
             orderBy: {
                 createdAt: 'desc',
@@ -98,12 +110,24 @@ let OrdersService = class OrdersService {
             where: {
                 userId,
             },
-            include: {
+            select: {
                 products: {
                     include: {
                         variants: true,
                     },
                 },
+                addressSnapshot: true,
+                id: true,
+                isWithdrawal: true,
+                discount: true,
+                observation: true,
+                deliveryCost: true,
+                createdAt: true,
+                deliveryTime: true,
+                status: true,
+                total: true,
+                paymentChange: true,
+                paymentMethod: true,
             },
             orderBy: {
                 createdAt: 'desc',

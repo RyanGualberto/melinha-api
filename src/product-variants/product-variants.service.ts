@@ -23,9 +23,22 @@ export class ProductVariantsService {
 
   async findAll() {
     return await this.prismaService.productVariant.findMany({
-      include: {
-        product: true,
-        productVariantCategory: true,
+      select: {
+        id: true,
+        image: true,
+        name: true,
+        price: true,
+        status: true,
+        product: {
+          select: {
+            title: true,
+          },
+        },
+        productVariantCategory: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   }
@@ -35,9 +48,22 @@ export class ProductVariantsService {
       where: {
         id,
       },
-      include: {
-        product: true,
-        productVariantCategory: true,
+      select: {
+        id: true,
+        image: true,
+        name: true,
+        price: true,
+        status: true,
+        product: {
+          select: {
+            title: true,
+          },
+        },
+        productVariantCategory: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   }

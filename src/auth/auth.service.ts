@@ -44,7 +44,7 @@ export class AuthService {
 
     return {
       user,
-      accessToken: await this.generateToken(user),
+      accessToken: await this.generateToken(user as User),
     };
   }
 
@@ -101,7 +101,7 @@ export class AuthService {
     const payload = { sub: user.id, user };
     return await this.jwtService.signAsync(payload, {
       privateKey: String(process.env.JWT_SECRET),
-      expiresIn: '1d',
+      expiresIn: '7d',
     });
   }
 }

@@ -17,7 +17,17 @@ let SettingsService = class SettingsService {
         this.prismaService = prismaService;
     }
     async findOne() {
-        const settings = await this.prismaService.storeSettings.findFirst();
+        const settings = await this.prismaService.storeSettings.findFirst({
+            select: {
+                id: true,
+                email: true,
+                instagram: true,
+                whatsapp: true,
+                deliveryTime: true,
+                orderMinimum: true,
+                opened: true,
+            },
+        });
         if (!settings) {
             const newSettings = await this.prismaService.storeSettings.create({
                 data: {
