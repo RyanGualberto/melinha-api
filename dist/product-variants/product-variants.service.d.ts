@@ -5,62 +5,62 @@ export declare class ProductVariantsService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
     create(createProductVariantDto: CreateProductVariantDto): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.ProductVariantStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.ProductVariantStatus;
         price: number;
-        productId: string;
         image: string;
-        name: string;
+        productId: string;
         productVariantCategoryId: string | null;
     }>;
     findAll(): Promise<{
-        id: string;
-        status: import(".prisma/client").$Enums.ProductVariantStatus;
-        price: number;
         product: {
             title: string;
         };
-        image: string;
-        name: string;
         productVariantCategory: {
             name: string;
         };
+        name: string;
+        id: string;
+        status: import(".prisma/client").$Enums.ProductVariantStatus;
+        price: number;
+        image: string;
     }[]>;
     findOne(id: string): Promise<{
-        id: string;
-        status: import(".prisma/client").$Enums.ProductVariantStatus;
-        price: number;
         product: {
             title: string;
         };
-        image: string;
-        name: string;
         productVariantCategory: {
             name: string;
         };
-    }>;
-    update(id: string, updateProductVariantDto: UpdateProductVariantDto): Promise<{
+        name: string;
         id: string;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
+        price: number;
+        image: string;
+    }>;
+    update(id: string, updateProductVariantDto: UpdateProductVariantDto): Promise<{
+        name: string;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.ProductVariantStatus;
         price: number;
-        productId: string;
         image: string;
-        name: string;
+        productId: string;
         productVariantCategoryId: string | null;
     }>;
     remove(id: string): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.ProductVariantStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.ProductVariantStatus;
         price: number;
-        productId: string;
         image: string;
-        name: string;
+        productId: string;
         productVariantCategoryId: string | null;
     }>;
 }

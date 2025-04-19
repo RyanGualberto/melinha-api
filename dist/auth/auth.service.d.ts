@@ -12,17 +12,17 @@ export declare class AuthService {
     constructor(usersService: UsersService, jwtService: JwtService, prismaService: PrismaService, mailService: MailService);
     register(createUserDto: CreateUserDto): Promise<{
         user: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
             firstName: string;
             lastName: string;
             phoneNumber: string;
+            email: string;
             password: string;
+            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
         accessToken: string;
     }>;
@@ -37,12 +37,12 @@ export declare class AuthService {
     }>;
     me(id: string): Promise<{
         email: string;
-        id: string;
-        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
         role: string;
+        createdAt: Date;
     }>;
     requestPasswordReset(email: string): Promise<{
         message: string;

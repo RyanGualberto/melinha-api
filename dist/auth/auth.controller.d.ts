@@ -9,28 +9,28 @@ export declare class AuthController {
     constructor(authService: AuthService, mailService: MailService);
     register(createUserDto: CreateUserDto): Promise<{
         user: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
             firstName: string;
             lastName: string;
             phoneNumber: string;
+            email: string;
             password: string;
+            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
         accessToken: string;
     }>;
     me(req: Request): Promise<{
         email: string;
-        id: string;
-        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
         role: string;
+        createdAt: Date;
     }>;
     login(loginAuthDto: LoginAuthDto): Promise<{
         user: {

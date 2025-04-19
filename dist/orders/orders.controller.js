@@ -27,8 +27,19 @@ let OrdersController = class OrdersController {
         createOrderDto.userSnapshot = JSON.stringify(req.user);
         return await this.ordersService.create(createOrderDto);
     }
-    async findAll() {
-        return await this.ordersService.findAll();
+    async findAll(page, perPage, customerName, status, paymentMethod, deliveryMethod, period) {
+        return await this.ordersService.findAllPaginated({
+            page: Number(page),
+            perPage: Number(perPage),
+            customerName: customerName,
+            deliveryMethod,
+            paymentMethod,
+            period,
+            status,
+        });
+    }
+    async findOrdersInProgress() {
+        return await this.ordersService.findOrdersInProgress();
     }
     async findNewOrders() {
         return await this.ordersService.findNewOrders();
@@ -56,10 +67,24 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('perPage')),
+    __param(2, (0, common_1.Query)('customerName')),
+    __param(3, (0, common_1.Query)('status')),
+    __param(4, (0, common_1.Query)('paymentMethod')),
+    __param(5, (0, common_1.Query)('deliveryMethod')),
+    __param(6, (0, common_1.Query)('period')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, Object, String, String, String]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Get)('in-progress'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], OrdersController.prototype, "findAll", null);
+], OrdersController.prototype, "findOrdersInProgress", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
     (0, common_1.Get)('new'),

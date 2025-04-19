@@ -8,23 +8,23 @@ export declare class UsersService {
     create(data: CreateUserDto): Promise<User>;
     findAll(): Promise<{
         email: string;
-        id: string;
-        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
+        createdAt: Date;
         orders: {
             createdAt: Date;
         }[];
     }[]>;
     findOne(id: string): Promise<{
         email: string;
-        id: string;
-        createdAt: Date;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        id: string;
         role: string;
+        createdAt: Date;
     }>;
     findByEmail(email: string): Promise<{
         email: string;
@@ -33,30 +33,30 @@ export declare class UsersService {
         lastName: string;
     } | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        email: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     remove(id: string): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        email: string;
         firstName: string;
         lastName: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     comparePassword(plainText: string, hashedPassword: string): Promise<boolean>;
     private maskEmail;

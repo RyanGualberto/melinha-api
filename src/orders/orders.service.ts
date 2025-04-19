@@ -77,15 +77,102 @@ export class OrdersService {
     return order;
   }
 
-  async findAll() {
-    return await this.prismaService.order.findMany({
-      select: {
-        products: {
-          include: {
-            variants: true,
+  async findAllPaginated({
+    page = 1,
+    perPage = 10,
+    customerName,
+    status,
+    deliveryMethod,
+    paymentMethod,
+    period,
+  }: {
+    page?: number;
+    perPage?: number;
+    customerName?: string;
+    status?: 'all' | keyof typeof OrderStatus;
+    deliveryMethod?: 'delivery' | 'withdrawal' | 'all';
+    paymentMethod?: 'all' | 'money' | 'card' | 'pix';
+    period?: 'all' | 'today' | 'yesterday' | 'last3Days' | 'lastMonth';
+  }) {
+    const safePageIndex = Math.max(0, page - 1);
+    const skip = safePageIndex * perPage;
+
+    const filters: Record<string, any> = {};
+
+    if (status && status !== 'all') {
+      filters.status = status;
+    }
+
+    if (deliveryMethod && deliveryMethod !== 'all') {
+      filters.isWithdrawal = deliveryMethod === 'withdrawal';
+    }
+
+    if (paymentMethod && paymentMethod !== 'all') {
+      filters.paymentMethod = paymentMethod;
+    }
+
+    if (customerName) {
+      filters.user = {
+        OR: [
+          {
+            firstName: {
+              contains: customerName,
+              mode: 'insensitive',
+            },
           },
-        },
-        addressSnapshot: true,
+          {
+            lastName: {
+              contains: customerName,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      };
+    }
+
+    if (period && period !== 'all') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let startDate: Date | null = null;
+
+      switch (period) {
+        case 'today':
+          startDate = today;
+          break;
+        case 'yesterday':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 1);
+          filters.createdAt = {
+            gte: startDate,
+            lt: today,
+          };
+          break;
+        case 'last3Days':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 3);
+          break;
+        case 'lastMonth':
+          startDate = new Date(today);
+          startDate.setMonth(today.getMonth() - 1);
+          break;
+      }
+
+      if (startDate && period !== 'yesterday') {
+        filters.createdAt = {
+          gte: startDate,
+        };
+      }
+    }
+
+    const orders = await this.prismaService.order.findMany({
+      where: filters,
+      skip,
+      take: perPage,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
         id: true,
         isWithdrawal: true,
         discount: true,
@@ -95,14 +182,89 @@ export class OrdersService {
         deliveryTime: true,
         status: true,
         total: true,
-        userSnapshot: true,
         paymentChange: true,
         paymentMethod: true,
+        userSnapshot: true,
+        addressSnapshot: true,
+        products: {
+          include: {
+            variants: true,
+          },
+        },
+      },
+    });
+
+    const aggregates = await this.prismaService.order.aggregate({
+      where: filters,
+      _sum: {
+        deliveryCost: true,
+        total: true,
+      },
+      _count: true,
+    });
+
+    return {
+      data: orders,
+      pagination: {
+        page,
+        perPage,
+        total: aggregates._count,
+      },
+      totals: {
+        deliveryCost: aggregates._sum.deliveryCost ?? 0,
+        totalSales: aggregates._sum.total ?? 0,
+      },
+    };
+  }
+
+  async findOrdersInProgress() {
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    // Definir o início do período
+    const startDate = new Date(now);
+    if (currentHour < 2) {
+      startDate.setDate(startDate.getDate() - 1);
+    }
+    startDate.setHours(9, 0, 0, 0);
+
+    // Definir o fim do período
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 1);
+    endDate.setHours(2, 0, 0, 0);
+
+    // Buscar pedidos no período com os status desejados
+    const orders = await this.prismaService.order.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+        status: {
+          in: ['PENDING', 'IN_PROGRESS', 'DELIVERY_IN_PROGRESS'],
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        products: {
+          include: {
+            variants: true,
+          },
+        },
+        address: true,
+        user: true,
+      },
     });
+
+    const result = {
+      waiting: orders.filter((o) => o.status === 'PENDING'),
+      inProgress: orders.filter((o) => o.status === 'IN_PROGRESS'),
+      inDelivery: orders.filter((o) => o.status === 'DELIVERY_IN_PROGRESS'),
+    };
+
+    return result;
   }
 
   async findNewOrders() {
@@ -204,7 +366,10 @@ export class OrdersService {
     });
 
     if (updateOrderDto.status !== OrderStatus.CANCELED) {
-      await this.mailService.sendOrderEmail(fullOrder);
+      this.mailService
+        .sendOrderEmail(fullOrder)
+        .then(() => {})
+        .catch(() => {});
     }
 
     this.ordersGateway.server.emit('orderUpdated', order);

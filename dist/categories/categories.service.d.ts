@@ -5,88 +5,88 @@ export declare class CategoriesService {
     private prismaService;
     constructor(prismaService: PrismaService);
     create(createCategoryDto: CreateCategoryDto): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     }>;
     findAll(): Promise<({
         products: {
             id: string;
-            status: import(".prisma/client").$Enums.ProductStatus;
             createdAt: Date;
             updatedAt: Date;
-            price: number;
+            status: import(".prisma/client").$Enums.ProductStatus;
             title: string;
             description: string;
+            price: number;
             image: string;
-            categoryId: string;
             cost: number;
+            categoryId: string;
             index: number;
         }[];
     } & {
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     })[]>;
     findOne(id: string): Promise<{
         products: {
             id: string;
-            status: import(".prisma/client").$Enums.ProductStatus;
             createdAt: Date;
             updatedAt: Date;
-            price: number;
+            status: import(".prisma/client").$Enums.ProductStatus;
             title: string;
             description: string;
+            price: number;
             image: string;
-            categoryId: string;
             cost: number;
+            categoryId: string;
             index: number;
         }[];
     } & {
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     }>;
     update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     }>;
     updateOrder(data: {
         id: string;
         index: number;
     }[]): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     }[]>;
     remove(id: string): Promise<{
+        name: string;
         id: string;
-        status: import(".prisma/client").$Enums.CategoryStatus;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.CategoryStatus;
         description: string | null;
         index: number;
-        name: string;
     }>;
 }
