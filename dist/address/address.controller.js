@@ -28,8 +28,8 @@ let AddressController = class AddressController {
     findAll(req) {
         return this.addressService.findAll(req.user.id);
     }
-    findOne(req, id) {
-        return this.addressService.findOne(id, req.user.id);
+    findAllByUserId(clientId) {
+        return this.addressService.findAll(clientId);
     }
     update(req, id, updateAddressDto) {
         return this.addressService.update(id, req.user.id, updateAddressDto);
@@ -55,13 +55,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AddressController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Param)('id')),
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Get)(':clientId'),
+    __param(0, (0, common_1.Param)('clientId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], AddressController.prototype, "findOne", null);
+], AddressController.prototype, "findAllByUserId", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Req)()),

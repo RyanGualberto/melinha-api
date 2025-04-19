@@ -37,6 +37,11 @@ export class OrdersService {
               const productData = await this.prismaService.product.findUnique({
                 where: { id: product.productId },
               });
+
+              if (!productData) {
+                console.log('product Data not found');
+              }
+
               return {
                 observation: product.productObservation,
                 productId: product.productId,

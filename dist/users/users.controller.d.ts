@@ -5,11 +5,11 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     findAll(page: string, perPage: string, clientName: string): Promise<{
         data: {
-            id: string;
             firstName: string;
             lastName: string;
-            email: string;
             phoneNumber: string;
+            email: string;
+            id: string;
             createdAt: Date;
             orders: {
                 createdAt: Date;
@@ -22,12 +22,12 @@ export declare class UsersController {
         };
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
-        id: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
@@ -35,12 +35,12 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     remove(id: string): Promise<{
-        id: string;
         firstName: string;
         lastName: string;
-        email: string;
         phoneNumber: string;
+        email: string;
         password: string;
+        id: string;
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;

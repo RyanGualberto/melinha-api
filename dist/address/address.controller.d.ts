@@ -38,7 +38,7 @@ export declare class AddressController {
         zipCode: string;
         principal: boolean;
     }[]>;
-    findOne(req: Express.Request, id: string): Promise<{
+    findAllByUserId(clientId: string): Promise<{
         number: string;
         address: string;
         name: string;
@@ -54,7 +54,7 @@ export declare class AddressController {
         country: string;
         zipCode: string;
         principal: boolean;
-    }>;
+    }[]>;
     update(req: Express.Request, id: string, updateAddressDto: UpdateAddressDto): Promise<{
         number: string;
         address: string;
