@@ -272,9 +272,50 @@ export class DashboardService {
       totalDeliveryCost += order.deliveryCost || 0;
     });
 
+    const ordersForWorkedDays = await this.prismaService.order.findMany({
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
+        },
+        createdAt: {
+          gte: last30Days,
+        },
+      },
+      select: {
+        createdAt: true,
+      },
+    });
+
+    // Armazena os dias únicos de operação
+    const workedDaysSet = new Set<string>();
+
+    ordersForWorkedDays.forEach((order) => {
+      const createdAt = new Date(order.createdAt);
+      const hour = createdAt.getHours();
+
+      // Se for antes das 12:00, considera como parte do "dia anterior"
+      if (hour < 12) {
+        createdAt.setDate(createdAt.getDate() - 1);
+      }
+
+      // Padroniza a data como 'YYYY-MM-DD'
+      const dateKey = createdAt.toISOString().split('T')[0];
+
+      workedDaysSet.add(dateKey);
+    });
+
+    const totalWorkedDays = workedDaysSet.size;
+
+    const deliveryFixedCostPerDay = 50; // valor fixo por dia
+    const deliveryFixedTotalCost = totalWorkedDays * deliveryFixedCostPerDay;
+
+    const totalDeliveryCostMoreDeliveryFixedTotalCost =
+      deliveryFixedTotalCost + totalDeliveryCost;
+
     // Calcular lucro
     const totalRevenue = revenueLast30Days._sum.total || 0;
-    const totalProfit = totalRevenue - totalCost - totalDeliveryCost;
+    const realProfit =
+      totalRevenue - totalCost - totalDeliveryCostMoreDeliveryFixedTotalCost;
 
     return {
       averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
@@ -292,9 +333,12 @@ export class DashboardService {
       bestWorstSellingNeighborhoodLastWeekend:
         bestWorstSellingNeighborhoodLastWeekend,
       leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
-      totalCost,
+      totalWorkedDays,
+      deliveryFixedTotalCost,
       totalDeliveryCost,
-      totalProfit,
+      totalDeliveryCostMoreDeliveryFixedTotalCost,
+      totalCost,
+      realProfit,
     };
   }
 }
