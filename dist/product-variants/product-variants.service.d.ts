@@ -5,11 +5,11 @@ export declare class ProductVariantsService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
     create(createProductVariantDto: CreateProductVariantDto): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
-        name: string;
         price: number;
         image: string;
         productId: string;
@@ -22,9 +22,9 @@ export declare class ProductVariantsService {
         productVariantCategory: {
             name: string;
         };
+        name: string;
         id: string;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
-        name: string;
         price: number;
         image: string;
     }[]>;
@@ -35,29 +35,29 @@ export declare class ProductVariantsService {
         productVariantCategory: {
             name: string;
         };
+        name: string;
         id: string;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
-        name: string;
         price: number;
         image: string;
     }>;
     update(id: string, updateProductVariantDto: UpdateProductVariantDto): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
-        name: string;
         price: number;
         image: string;
         productId: string;
         productVariantCategoryId: string | null;
     }>;
     remove(id: string): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.ProductVariantStatus;
-        name: string;
         price: number;
         image: string;
         productId: string;

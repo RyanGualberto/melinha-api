@@ -5,11 +5,11 @@ export declare class CategoriesController {
     private readonly categoriesService;
     constructor(categoriesService: CategoriesService);
     create(createCategoryDto: CreateCategoryDto): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     }>;
@@ -28,11 +28,11 @@ export declare class CategoriesController {
             index: number;
         }[];
     } & {
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     })[]>;
@@ -51,11 +51,11 @@ export declare class CategoriesController {
             index: number;
         }[];
     } & {
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     }>;
@@ -63,29 +63,29 @@ export declare class CategoriesController {
         id: string;
         index: number;
     }[]): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     }[]>;
     update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     }>;
     remove(id: string): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import(".prisma/client").$Enums.CategoryStatus;
-        name: string;
         description: string | null;
         index: number;
     }>;

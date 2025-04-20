@@ -4,6 +4,7 @@ export declare class MenuController {
     constructor(menuService: MenuService);
     getMenu(query: string): Promise<{
         categories: {
+            name: string;
             id: string;
             status: import(".prisma/client").$Enums.CategoryStatus;
             products: {
@@ -16,20 +17,19 @@ export declare class MenuController {
                 index: number;
                 productVariants: {
                     productVariantCategory: {
-                        id: string;
                         name: string;
+                        id: string;
                         type: import(".prisma/client").$Enums.ProductVariantCategoryType;
                         max: number;
                     };
+                    name: string;
                     id: string;
                     status: import(".prisma/client").$Enums.ProductVariantStatus;
-                    name: string;
                     price: number;
                     productId: string;
                     productVariantCategoryId: string;
                 }[];
             }[];
-            name: string;
             description: string;
             index: number;
         }[];
@@ -39,19 +39,19 @@ export declare class MenuController {
             products: ({
                 productVariants: ({
                     productVariantCategory: {
+                        name: string;
                         id: string;
                         createdAt: Date;
                         updatedAt: Date;
-                        name: string;
                         type: import(".prisma/client").$Enums.ProductVariantCategoryType;
                         max: number | null;
                     };
                 } & {
+                    name: string;
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
                     status: import(".prisma/client").$Enums.ProductVariantStatus;
-                    name: string;
                     price: number;
                     image: string;
                     productId: string;
@@ -71,11 +71,11 @@ export declare class MenuController {
                 index: number;
             })[];
         } & {
+            name: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
             status: import(".prisma/client").$Enums.CategoryStatus;
-            name: string;
             description: string | null;
             index: number;
         })[];

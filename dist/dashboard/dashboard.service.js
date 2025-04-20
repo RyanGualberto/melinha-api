@@ -229,8 +229,35 @@ let DashboardService = class DashboardService {
         ordersLast30DaysWithDeliveryCost.forEach((order) => {
             totalDeliveryCost += order.deliveryCost || 0;
         });
+        const ordersForWorkedDays = await this.prismaService.order.findMany({
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: {
+                    gte: last30Days,
+                },
+            },
+            select: {
+                createdAt: true,
+            },
+        });
+        const workedDaysSet = new Set();
+        ordersForWorkedDays.forEach((order) => {
+            const createdAt = new Date(order.createdAt);
+            const hour = createdAt.getHours();
+            if (hour < 12) {
+                createdAt.setDate(createdAt.getDate() - 1);
+            }
+            const dateKey = createdAt.toISOString().split('T')[0];
+            workedDaysSet.add(dateKey);
+        });
+        const totalWorkedDays = workedDaysSet.size;
+        const deliveryFixedCostPerDay = 50;
+        const deliveryFixedTotalCost = totalWorkedDays * deliveryFixedCostPerDay;
+        const totalDeliveryCostMoreDeliveryFixedTotalCost = deliveryFixedTotalCost + totalDeliveryCost;
         const totalRevenue = revenueLast30Days._sum.total || 0;
-        const totalProfit = totalRevenue - totalCost - totalDeliveryCost;
+        const realProfit = totalRevenue - totalCost - totalDeliveryCostMoreDeliveryFixedTotalCost;
         return {
             averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
             totalClients,
@@ -246,9 +273,12 @@ let DashboardService = class DashboardService {
             leastSellingNeighborhoodLast30Days: leastSellingNeighborhoodLast30Days,
             bestWorstSellingNeighborhoodLastWeekend: bestWorstSellingNeighborhoodLastWeekend,
             leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
-            totalCost,
+            totalWorkedDays,
+            deliveryFixedTotalCost,
             totalDeliveryCost,
-            totalProfit,
+            totalDeliveryCostMoreDeliveryFixedTotalCost,
+            totalCost,
+            realProfit,
         };
     }
 };

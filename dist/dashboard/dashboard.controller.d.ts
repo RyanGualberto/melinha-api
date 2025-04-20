@@ -33,8 +33,11 @@ export declare class DashboardController {
         leastSellingNeighborhoodLast30Days: [string, number];
         bestWorstSellingNeighborhoodLastWeekend: [string, number];
         leastSellingNeighborhoodLastWeekend: [string, number];
-        totalCost: number;
+        totalWorkedDays: number;
+        deliveryFixedTotalCost: number;
         totalDeliveryCost: number;
-        totalProfit: number;
+        totalDeliveryCostMoreDeliveryFixedTotalCost: number;
+        totalCost: number;
+        realProfit: number;
     }>;
 }

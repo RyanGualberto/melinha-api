@@ -7,11 +7,11 @@ export declare class AddressService {
     create(createAddressDto: CreateAddressDto, userId: string): Promise<{
         number: string;
         address: string;
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -24,11 +24,11 @@ export declare class AddressService {
     findAll(userId: string): Promise<{
         number: string;
         address: string;
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -41,11 +41,11 @@ export declare class AddressService {
     findOne(id: string, userId: string): Promise<{
         number: string;
         address: string;
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -58,11 +58,11 @@ export declare class AddressService {
     update(id: string, userId: string, updateAddressDto: UpdateAddressDto): Promise<{
         number: string;
         address: string;
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        name: string;
         complement: string | null;
         reference: string | null;
         district: string;
@@ -75,11 +75,11 @@ export declare class AddressService {
     remove(id: string, userId: string): Promise<{
         number: string;
         address: string;
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        name: string;
         complement: string | null;
         reference: string | null;
         district: string;

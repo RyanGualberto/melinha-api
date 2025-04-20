@@ -19,9 +19,9 @@ export declare class ProductsService {
     }>;
     findAll(): Promise<{
         category: {
+            name: string;
             id: string;
             status: import(".prisma/client").$Enums.CategoryStatus;
-            name: string;
             description: string;
         };
         id: string;
@@ -33,9 +33,9 @@ export declare class ProductsService {
     }[]>;
     findOne(id: string): Promise<{
         category: {
+            name: string;
             id: string;
             status: import(".prisma/client").$Enums.CategoryStatus;
-            name: string;
             description: string;
         };
         id: string;
