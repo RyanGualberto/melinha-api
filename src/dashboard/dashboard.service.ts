@@ -222,6 +222,60 @@ export class DashboardService {
       sortedDistrictsLastWeekend.length - 1
     ] || ['Nenhum', 0];
 
+    // Buscar OrderProducts dos últimos 30 dias com custo do produto
+    const orderProductsLast30Days =
+      await this.prismaService.orderProduct.findMany({
+        where: {
+          order: {
+            status: {
+              not: OrderStatus.CANCELED,
+            },
+            createdAt: {
+              gte: last30Days,
+            },
+          },
+        },
+        include: {
+          product: {
+            select: {
+              cost: true,
+            },
+          },
+        },
+      });
+
+    // Buscar Orders válidos dos últimos 30 dias para calcular o total de frete
+    const ordersLast30DaysWithDeliveryCost =
+      await this.prismaService.order.findMany({
+        where: {
+          status: {
+            not: OrderStatus.CANCELED,
+          },
+          createdAt: {
+            gte: last30Days,
+          },
+        },
+        select: {
+          deliveryCost: true,
+        },
+      });
+
+    // Calcular total de custo
+    let totalCost = 0;
+    orderProductsLast30Days.forEach((op) => {
+      totalCost += (op.product?.cost || 0) * op.quantity;
+    });
+
+    // Calcular total de frete
+    let totalDeliveryCost = 0;
+    ordersLast30DaysWithDeliveryCost.forEach((order) => {
+      totalDeliveryCost += order.deliveryCost || 0;
+    });
+
+    // Calcular lucro
+    const totalRevenue = revenueLast30Days._sum.total || 0;
+    const totalProfit = totalRevenue - totalCost - totalDeliveryCost;
+
     return {
       averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
       totalClients,
@@ -238,6 +292,9 @@ export class DashboardService {
       bestWorstSellingNeighborhoodLastWeekend:
         bestWorstSellingNeighborhoodLastWeekend,
       leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
+      totalCost,
+      totalDeliveryCost,
+      totalProfit,
     };
   }
 }

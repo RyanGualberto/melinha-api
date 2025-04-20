@@ -189,6 +189,48 @@ let DashboardService = class DashboardService {
         const sortedDistrictsLastWeekend = Object.entries(districtCountLastWeekend).sort((a, b) => b[1] - a[1]);
         const bestWorstSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[0] || ['Nenhum', 0];
         const leastSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[sortedDistrictsLastWeekend.length - 1] || ['Nenhum', 0];
+        const orderProductsLast30Days = await this.prismaService.orderProduct.findMany({
+            where: {
+                order: {
+                    status: {
+                        not: client_1.OrderStatus.CANCELED,
+                    },
+                    createdAt: {
+                        gte: last30Days,
+                    },
+                },
+            },
+            include: {
+                product: {
+                    select: {
+                        cost: true,
+                    },
+                },
+            },
+        });
+        const ordersLast30DaysWithDeliveryCost = await this.prismaService.order.findMany({
+            where: {
+                status: {
+                    not: client_1.OrderStatus.CANCELED,
+                },
+                createdAt: {
+                    gte: last30Days,
+                },
+            },
+            select: {
+                deliveryCost: true,
+            },
+        });
+        let totalCost = 0;
+        orderProductsLast30Days.forEach((op) => {
+            totalCost += (op.product?.cost || 0) * op.quantity;
+        });
+        let totalDeliveryCost = 0;
+        ordersLast30DaysWithDeliveryCost.forEach((order) => {
+            totalDeliveryCost += order.deliveryCost || 0;
+        });
+        const totalRevenue = revenueLast30Days._sum.total || 0;
+        const totalProfit = totalRevenue - totalCost - totalDeliveryCost;
         return {
             averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
             totalClients,
@@ -204,6 +246,9 @@ let DashboardService = class DashboardService {
             leastSellingNeighborhoodLast30Days: leastSellingNeighborhoodLast30Days,
             bestWorstSellingNeighborhoodLastWeekend: bestWorstSellingNeighborhoodLastWeekend,
             leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
+            totalCost,
+            totalDeliveryCost,
+            totalProfit,
         };
     }
 };
