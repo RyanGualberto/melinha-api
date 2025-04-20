@@ -82,8 +82,7 @@ let OrdersService = class OrdersService {
         return order;
     }
     async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, period, }) {
-        const safePageIndex = Math.max(0, page - 1);
-        const skip = safePageIndex * perPage;
+        const skip = page * perPage;
         const filters = {};
         if (status && status !== 'all') {
             filters.status = status;

@@ -99,8 +99,7 @@ export class OrdersService {
     paymentMethod?: 'all' | 'money' | 'card' | 'pix';
     period?: 'all' | 'today' | 'yesterday' | 'last3Days' | 'lastMonth';
   }) {
-    const safePageIndex = Math.max(0, page - 1);
-    const skip = safePageIndex * perPage;
+    const skip = page * perPage;
 
     const filters: Record<string, any> = {};
 
