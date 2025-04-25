@@ -28,6 +28,24 @@ let OrdersService = class OrdersService {
         if (!storeSettings.opened) {
             throw new common_1.BadRequestException('Store is closed');
         }
+        if (createOrderDto.couponId) {
+            const coupon = await this.prismaService.coupon.findUnique({
+                where: { id: createOrderDto.couponId },
+            });
+            if (!coupon) {
+                throw new common_1.BadRequestException('Coupon not found');
+            }
+            if (coupon.expiresAt < new Date()) {
+                throw new common_1.BadRequestException('Coupon expired');
+            }
+            if (coupon.usedCount >= coupon.maxUses) {
+                throw new common_1.BadRequestException('Coupon max uses reached');
+            }
+            await this.prismaService.coupon.update({
+                where: { id: coupon.id },
+                data: { usedCount: coupon.usedCount + 1 },
+            });
+        }
         const order = await this.prismaService.order.create({
             data: {
                 userId: createOrderDto.userId,
@@ -69,6 +87,8 @@ let OrdersService = class OrdersService {
                 addressSnapshot: createOrderDto.addressSnapshot,
                 deliveryTime: storeSettings.deliveryTime,
                 userSnapshot: createOrderDto.userSnapshot,
+                couponId: createOrderDto.couponId,
+                new: true,
             },
             include: {
                 products: {
@@ -233,8 +253,7 @@ let OrdersService = class OrdersService {
         return result;
     }
     async findNewOrders() {
-        const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
-        return await this.prismaService.order.findMany({
+        const newOrders = await this.prismaService.order.findMany({
             select: {
                 products: {
                     include: {
@@ -259,11 +278,25 @@ let OrdersService = class OrdersService {
                 createdAt: 'desc',
             },
             where: {
-                createdAt: {
-                    gte: oneMinuteAgo,
-                },
+                new: true,
             },
         });
+        newOrders.forEach((order) => {
+            this.prismaService.order
+                .update({
+                where: { id: order.id },
+                data: {
+                    new: false,
+                },
+            })
+                .then(() => {
+                this.ordersGateway.server.emit('orderCreated', order);
+            })
+                .catch(() => {
+                console.log('Error updating order to not new');
+            });
+        });
+        return newOrders;
     }
     async listUserOrders(userId) {
         return await this.prismaService.order.findMany({

@@ -22,6 +22,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { DashboardModule } from './dashboard/dashboard.module';
 // import { LoggerMiddleware } from './config/use-logging';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     AddressModule,
     OrdersModule,
     DashboardModule,
+    CouponsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

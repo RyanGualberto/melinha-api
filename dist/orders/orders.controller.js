@@ -23,6 +23,9 @@ let OrdersController = class OrdersController {
         this.ordersService = ordersService;
     }
     async create(req, createOrderDto) {
+        if (req.user.role === 'admin' && createOrderDto.userId) {
+            return await this.ordersService.create(createOrderDto);
+        }
         createOrderDto.userId = req.user.id;
         createOrderDto.userSnapshot = JSON.stringify(req.user);
         return await this.ordersService.create(createOrderDto);

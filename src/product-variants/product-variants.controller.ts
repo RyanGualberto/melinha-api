@@ -8,11 +8,13 @@ import {
   Delete,
   UseGuards,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ProductVariantsService } from './product-variants.service';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
 import { AdminGuard } from '../auth/auth.guard';
+import { UpdateManyProductVariantDto } from './dto/update-many-product-variant.dto';
 
 @Controller('product-variants')
 export class ProductVariantsController {
@@ -27,10 +29,30 @@ export class ProductVariantsController {
     return await this.productVariantsService.create(createProductVariantDto);
   }
 
+  @UseGuards(AdminGuard)
+  @Post('batch')
+  @HttpCode(201)
+  async createMany(
+    @Body()
+    createProductVariantsDto: [CreateProductVariantDto],
+  ) {
+    return await this.productVariantsService.createMany(
+      createProductVariantsDto,
+    );
+  }
+
   @Get()
   @HttpCode(200)
-  async findAll() {
-    return await this.productVariantsService.findAll();
+  async findAll(
+    @Query('page') page: number,
+    @Query('perPage') perPage: number,
+    @Query('productVariantName') productVariantName: string,
+  ) {
+    return await this.productVariantsService.findAllPaginated({
+      page: Number(page),
+      perPage: Number(perPage),
+      productVariantName,
+    });
   }
 
   @Get(':id')
@@ -40,7 +62,7 @@ export class ProductVariantsController {
   }
 
   @UseGuards(AdminGuard)
-  @Patch(':id')
+  @Patch('single/:id')
   @HttpCode(200)
   async update(
     @Param('id') id: string,
@@ -53,9 +75,29 @@ export class ProductVariantsController {
   }
 
   @UseGuards(AdminGuard)
-  @Delete(':id')
+  @Patch('batch')
+  @HttpCode(200)
+  async updateMany(
+    @Body()
+    updateManyProductVariantDto: UpdateManyProductVariantDto & {
+      ids: string[];
+    },
+  ) {
+    const { ids, ...updateMany } = updateManyProductVariantDto;
+    return await this.productVariantsService.updateMany(ids, updateMany);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete('/single/:id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {
     return await this.productVariantsService.remove(id);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete('batch')
+  @HttpCode(204)
+  async removeMany(@Body('ids') ids: string[]) {
+    return await this.productVariantsService.removeMany(ids);
   }
 }

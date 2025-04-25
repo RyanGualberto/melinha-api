@@ -23,6 +23,29 @@ export class OrdersService {
       throw new BadRequestException('Store is closed');
     }
 
+    if (createOrderDto.couponId) {
+      const coupon = await this.prismaService.coupon.findUnique({
+        where: { id: createOrderDto.couponId },
+      });
+
+      if (!coupon) {
+        throw new BadRequestException('Coupon not found');
+      }
+
+      if (coupon.expiresAt < new Date()) {
+        throw new BadRequestException('Coupon expired');
+      }
+
+      if (coupon.usedCount >= coupon.maxUses) {
+        throw new BadRequestException('Coupon max uses reached');
+      }
+
+      await this.prismaService.coupon.update({
+        where: { id: coupon.id },
+        data: { usedCount: coupon.usedCount + 1 },
+      });
+    }
+
     const order = await this.prismaService.order.create({
       data: {
         userId: createOrderDto.userId,
@@ -68,6 +91,8 @@ export class OrdersService {
         addressSnapshot: createOrderDto.addressSnapshot,
         deliveryTime: storeSettings.deliveryTime,
         userSnapshot: createOrderDto.userSnapshot,
+        couponId: createOrderDto.couponId,
+        new: true,
       },
       include: {
         products: {
@@ -272,9 +297,7 @@ export class OrdersService {
   }
 
   async findNewOrders() {
-    const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
-
-    return await this.prismaService.order.findMany({
+    const newOrders = await this.prismaService.order.findMany({
       select: {
         products: {
           include: {
@@ -299,11 +322,27 @@ export class OrdersService {
         createdAt: 'desc',
       },
       where: {
-        createdAt: {
-          gte: oneMinuteAgo,
-        },
+        new: true,
       },
     });
+
+    newOrders.forEach((order) => {
+      this.prismaService.order
+        .update({
+          where: { id: order.id },
+          data: {
+            new: false,
+          },
+        })
+        .then(() => {
+          this.ordersGateway.server.emit('orderCreated', order);
+        })
+        .catch(() => {
+          console.log('Error updating order to not new');
+        });
+    });
+
+    return newOrders;
   }
 
   async listUserOrders(userId: string) {

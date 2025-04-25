@@ -129,6 +129,9 @@ model Order {
   paymentChange Float?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  couponId      String?
+  coupon        Coupon?        @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  new           Boolean?       @default(false)
 
   @@map("orders")
 }
@@ -184,6 +187,30 @@ model StoreSettings {
   updatedAt DateTime @updatedAt
 
   @@map("store_settings")
+}
+
+model Coupon {
+  id          String     @id @default(uuid())
+  code        String     @unique // ex: "MELINHA10"
+  description String?
+  discount    Float // valor de desconto em R$ ou %
+  type        CouponType @default(PERCENT) // tipo do desconto
+  maxUses     Int? // número máximo de usos (opcional)
+  usedCount   Int        @default(0) // para controlar quantos já usaram
+  expiresAt   DateTime? // data de expiração
+  active      Boolean    @default(true)
+
+  orders Order[] // relação com pedidos que usaram esse cupom
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("coupons")
+}
+
+enum CouponType {
+  PERCENT // Ex: 10% de desconto
+  VALUE // Ex: R$5,00 de desconto
 }
 
 enum OrderStatus {

@@ -24,6 +24,10 @@ export class OrdersController {
   @UseGuards(AuthGuard)
   @Post()
   async create(@Req() req: Request, @Body() createOrderDto: CreateOrderDto) {
+    if (req.user.role === 'admin' && createOrderDto.userId) {
+      return await this.ordersService.create(createOrderDto);
+    }
+
     createOrderDto.userId = req.user.id;
     createOrderDto.userSnapshot = JSON.stringify(req.user);
     return await this.ordersService.create(createOrderDto);

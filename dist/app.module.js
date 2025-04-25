@@ -25,6 +25,7 @@ const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
 const path_1 = require("path");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const coupons_module_1 = require("./coupons/coupons.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -65,6 +66,7 @@ exports.AppModule = AppModule = __decorate([
             address_module_1.AddressModule,
             orders_module_1.OrdersModule,
             dashboard_module_1.DashboardModule,
+            coupons_module_1.CouponsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

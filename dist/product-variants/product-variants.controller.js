@@ -25,8 +25,15 @@ let ProductVariantsController = class ProductVariantsController {
     async create(createProductVariantDto) {
         return await this.productVariantsService.create(createProductVariantDto);
     }
-    async findAll() {
-        return await this.productVariantsService.findAll();
+    async createMany(createProductVariantsDto) {
+        return await this.productVariantsService.createMany(createProductVariantsDto);
+    }
+    async findAll(page, perPage, productVariantName) {
+        return await this.productVariantsService.findAllPaginated({
+            page: Number(page),
+            perPage: Number(perPage),
+            productVariantName,
+        });
     }
     async findOne(id) {
         return await this.productVariantsService.findOne(id);
@@ -34,8 +41,15 @@ let ProductVariantsController = class ProductVariantsController {
     async update(id, updateProductVariantDto) {
         return await this.productVariantsService.update(id, updateProductVariantDto);
     }
+    async updateMany(updateManyProductVariantDto) {
+        const { ids, ...updateMany } = updateManyProductVariantDto;
+        return await this.productVariantsService.updateMany(ids, updateMany);
+    }
     async remove(id) {
         return await this.productVariantsService.remove(id);
+    }
+    async removeMany(ids) {
+        return await this.productVariantsService.removeMany(ids);
     }
 };
 exports.ProductVariantsController = ProductVariantsController;
@@ -49,10 +63,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductVariantsController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Post)('batch'),
+    (0, common_1.HttpCode)(201),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], ProductVariantsController.prototype, "createMany", null);
+__decorate([
     (0, common_1.Get)(),
     (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('perPage')),
+    __param(2, (0, common_1.Query)('productVariantName')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, Number, String]),
     __metadata("design:returntype", Promise)
 ], ProductVariantsController.prototype, "findAll", null);
 __decorate([
@@ -65,7 +91,7 @@ __decorate([
 ], ProductVariantsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
-    (0, common_1.Patch)(':id'),
+    (0, common_1.Patch)('single/:id'),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -75,13 +101,31 @@ __decorate([
 ], ProductVariantsController.prototype, "update", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Patch)('batch'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ProductVariantsController.prototype, "updateMany", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Delete)('/single/:id'),
     (0, common_1.HttpCode)(204),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ProductVariantsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.Delete)('batch'),
+    (0, common_1.HttpCode)(204),
+    __param(0, (0, common_1.Body)('ids')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], ProductVariantsController.prototype, "removeMany", null);
 exports.ProductVariantsController = ProductVariantsController = __decorate([
     (0, common_1.Controller)('product-variants'),
     __metadata("design:paramtypes", [product_variants_service_1.ProductVariantsService])

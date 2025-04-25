@@ -22,5 +22,6 @@ export declare class CreateOrderDto {
     userSnapshot: string;
     orderObservation?: string;
     isWithdrawal?: boolean;
+    couponId?: string;
 }
 export {};

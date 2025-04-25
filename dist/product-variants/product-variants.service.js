@@ -16,6 +16,11 @@ let ProductVariantsService = class ProductVariantsService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
+    async createMany(createProductVariantDto) {
+        return await this.prismaService.productVariant.createMany({
+            data: createProductVariantDto,
+        });
+    }
     async create(createProductVariantDto) {
         return await this.prismaService.productVariant.create({
             data: {
@@ -28,8 +33,21 @@ let ProductVariantsService = class ProductVariantsService {
             },
         });
     }
-    async findAll() {
-        return await this.prismaService.productVariant.findMany({
+    async findAllPaginated({ page = 0, perPage = 10, productVariantName, }) {
+        const skip = page * perPage;
+        const where = productVariantName
+            ? {
+                OR: [
+                    {
+                        name: { contains: productVariantName, mode: 'insensitive' },
+                    },
+                ],
+            }
+            : undefined;
+        const productVariants = await this.prismaService.productVariant.findMany({
+            where: where,
+            skip,
+            take: perPage,
             select: {
                 id: true,
                 image: true,
@@ -41,6 +59,8 @@ let ProductVariantsService = class ProductVariantsService {
                         title: true,
                     },
                 },
+                productVariantCategoryId: true,
+                productId: true,
                 productVariantCategory: {
                     select: {
                         name: true,
@@ -48,6 +68,18 @@ let ProductVariantsService = class ProductVariantsService {
                 },
             },
         });
+        const aggregates = await this.prismaService.productVariant.aggregate({
+            where,
+            _count: true,
+        });
+        return {
+            data: productVariants,
+            pagination: {
+                page,
+                perPage,
+                total: aggregates._count,
+            },
+        };
     }
     async findOne(id) {
         return await this.prismaService.productVariant.findUnique({
@@ -81,10 +113,29 @@ let ProductVariantsService = class ProductVariantsService {
             data: updateProductVariantDto,
         });
     }
+    async updateMany(ids, updateProductVariantDto) {
+        return await this.prismaService.productVariant.updateMany({
+            where: {
+                id: {
+                    in: ids,
+                },
+            },
+            data: updateProductVariantDto,
+        });
+    }
     async remove(id) {
         return await this.prismaService.productVariant.delete({
             where: {
                 id,
+            },
+        });
+    }
+    async removeMany(ids) {
+        return await this.prismaService.productVariant.deleteMany({
+            where: {
+                id: {
+                    in: ids,
+                },
             },
         });
     }
