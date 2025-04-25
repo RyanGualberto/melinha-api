@@ -23,19 +23,21 @@ export declare class OrdersService {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     } & {
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -49,8 +51,6 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
         couponId: string | null;
         new: boolean | null;
     }>;
@@ -65,6 +65,7 @@ export declare class OrdersService {
     }): Promise<{
         data: {
             id: string;
+            createdAt: Date;
             isWithdrawal: boolean;
             addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
             userSnapshot: import("@prisma/client/runtime/library").JsonValue;
@@ -76,7 +77,6 @@ export declare class OrdersService {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number;
-            createdAt: Date;
             products: ({
                 variants: {
                     id: string;
@@ -88,16 +88,16 @@ export declare class OrdersService {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         }[];
         pagination: {
@@ -113,26 +113,26 @@ export declare class OrdersService {
     findOrdersInProgress(): Promise<{
         waiting: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -153,19 +153,21 @@ export declare class OrdersService {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -179,33 +181,31 @@ export declare class OrdersService {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
             couponId: string | null;
             new: boolean | null;
         })[];
         inProgress: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -226,19 +226,21 @@ export declare class OrdersService {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -252,33 +254,31 @@ export declare class OrdersService {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
             couponId: string | null;
             new: boolean | null;
         })[];
         inDelivery: ({
             user: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                email: string;
                 firstName: string;
                 lastName: string;
                 phoneNumber: string;
+                email: string;
                 password: string;
+                id: string;
                 role: string;
                 resetToken: string | null;
                 resetExpires: Date | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
             address: {
                 number: string;
-                id: string;
-                userId: string;
-                createdAt: Date;
-                updatedAt: Date;
                 address: string;
                 name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
                 complement: string | null;
                 reference: string | null;
                 district: string;
@@ -299,19 +299,21 @@ export declare class OrdersService {
                 }[];
             } & {
                 id: string;
-                observation: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                observation: string | null;
+                orderId: string;
+                price: number;
+                productId: string;
                 productTitleSnapshot: string;
                 productPriceSnapshot: number;
                 quantity: number;
-                price: number;
-                productId: string;
                 productVariantId: string | null;
-                orderId: string;
             })[];
         } & {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string | null;
             addressId: string | null;
             isWithdrawal: boolean | null;
@@ -325,14 +327,13 @@ export declare class OrdersService {
             deliveryCost: number;
             paymentMethod: string;
             paymentChange: number | null;
-            createdAt: Date;
-            updatedAt: Date;
             couponId: string | null;
             new: boolean | null;
         })[];
     }>;
     findNewOrders(): Promise<{
         id: string;
+        createdAt: Date;
         isWithdrawal: boolean;
         addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
         userSnapshot: import("@prisma/client/runtime/library").JsonValue;
@@ -344,7 +345,6 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number;
-        createdAt: Date;
         products: ({
             variants: {
                 id: string;
@@ -356,20 +356,21 @@ export declare class OrdersService {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     }[]>;
     listUserOrders(userId: string): Promise<{
         id: string;
+        createdAt: Date;
         isWithdrawal: boolean;
         addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
         status: import(".prisma/client").$Enums.OrderStatus;
@@ -380,7 +381,6 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number;
-        createdAt: Date;
         products: ({
             variants: {
                 id: string;
@@ -392,31 +392,31 @@ export declare class OrdersService {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     }[]>;
     findOne(id: string): Promise<{
         user: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            email: string;
             firstName: string;
             lastName: string;
             phoneNumber: string;
+            email: string;
             password: string;
+            id: string;
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
         products: ({
             variants: {
@@ -429,19 +429,21 @@ export declare class OrdersService {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     } & {
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -455,8 +457,6 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
         couponId: string | null;
         new: boolean | null;
     }>;
@@ -472,19 +472,21 @@ export declare class OrdersService {
             }[];
         } & {
             id: string;
-            observation: string | null;
             createdAt: Date;
             updatedAt: Date;
+            observation: string | null;
+            orderId: string;
+            price: number;
+            productId: string;
             productTitleSnapshot: string;
             productPriceSnapshot: number;
             quantity: number;
-            price: number;
-            productId: string;
             productVariantId: string | null;
-            orderId: string;
         })[];
     } & {
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -498,13 +500,13 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
         couponId: string | null;
         new: boolean | null;
     }>;
     remove(id: string): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string | null;
         addressId: string | null;
         isWithdrawal: boolean | null;
@@ -518,8 +520,6 @@ export declare class OrdersService {
         deliveryCost: number;
         paymentMethod: string;
         paymentChange: number | null;
-        createdAt: Date;
-        updatedAt: Date;
         couponId: string | null;
         new: boolean | null;
     }>;
