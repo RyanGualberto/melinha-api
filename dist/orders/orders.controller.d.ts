@@ -318,43 +318,6 @@ export declare class OrdersController {
             new: boolean | null;
         })[];
     }>;
-    findNewOrders(): Promise<{
-        id: string;
-        createdAt: Date;
-        isWithdrawal: boolean;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
-        userSnapshot: import("@prisma/client/runtime/library").JsonValue;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        observation: string;
-        total: number;
-        discount: number;
-        deliveryTime: number;
-        deliveryCost: number;
-        paymentMethod: string;
-        paymentChange: number;
-        products: ({
-            variants: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                variantName: string;
-                variantPrice: number;
-                orderProductId: string;
-            }[];
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            observation: string | null;
-            orderId: string;
-            price: number;
-            productId: string;
-            productTitleSnapshot: string;
-            productPriceSnapshot: number;
-            quantity: number;
-            productVariantId: string | null;
-        })[];
-    }[]>;
     listUserOrders(req: Request): Promise<{
         id: string;
         createdAt: Date;

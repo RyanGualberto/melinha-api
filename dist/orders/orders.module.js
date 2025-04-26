@@ -14,6 +14,7 @@ const prisma_service_1 = require("../config/prisma-service");
 const orders_controller_1 = require("./orders.controller");
 const settings_service_1 = require("../settings/settings.service");
 const mail_service_1 = require("../mail/mail.service");
+const pusher_service_1 = require("../pusher/pusher.service");
 let OrdersModule = class OrdersModule {
 };
 exports.OrdersModule = OrdersModule;
@@ -26,6 +27,7 @@ exports.OrdersModule = OrdersModule = __decorate([
             prisma_service_1.PrismaService,
             settings_service_1.SettingsService,
             mail_service_1.MailService,
+            pusher_service_1.PusherService,
         ],
     })
 ], OrdersModule);

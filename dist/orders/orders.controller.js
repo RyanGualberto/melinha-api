@@ -44,9 +44,6 @@ let OrdersController = class OrdersController {
     async findOrdersInProgress() {
         return await this.ordersService.findOrdersInProgress();
     }
-    async findNewOrders() {
-        return await this.ordersService.findNewOrders();
-    }
     async listUserOrders(req) {
         return await this.ordersService.listUserOrders(req.user?.id);
     }
@@ -88,13 +85,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "findOrdersInProgress", null);
-__decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
-    (0, common_1.Get)('new'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], OrdersController.prototype, "findNewOrders", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)('current-user'),

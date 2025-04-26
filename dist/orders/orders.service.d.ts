@@ -3,14 +3,16 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderStatus } from '@prisma/client';
 import { OrdersGateway } from './orders.gateway';
-import { SettingsService } from 'src/settings/settings.service';
+import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
+import { PusherService } from '../pusher/pusher.service';
 export declare class OrdersService {
     private prismaService;
     private ordersGateway;
     private readonly settingsService;
     private readonly mailService;
-    constructor(prismaService: PrismaService, ordersGateway: OrdersGateway, settingsService: SettingsService, mailService: MailService);
+    private readonly pusherService;
+    constructor(prismaService: PrismaService, ordersGateway: OrdersGateway, settingsService: SettingsService, mailService: MailService, pusherService: PusherService);
     create(createOrderDto: CreateOrderDto): Promise<{
         products: ({
             variants: {
@@ -331,43 +333,6 @@ export declare class OrdersService {
             new: boolean | null;
         })[];
     }>;
-    findNewOrders(): Promise<{
-        id: string;
-        createdAt: Date;
-        isWithdrawal: boolean;
-        addressSnapshot: import("@prisma/client/runtime/library").JsonValue;
-        userSnapshot: import("@prisma/client/runtime/library").JsonValue;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        observation: string;
-        total: number;
-        discount: number;
-        deliveryTime: number;
-        deliveryCost: number;
-        paymentMethod: string;
-        paymentChange: number;
-        products: ({
-            variants: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                variantName: string;
-                variantPrice: number;
-                orderProductId: string;
-            }[];
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            observation: string | null;
-            orderId: string;
-            price: number;
-            productId: string;
-            productTitleSnapshot: string;
-            productPriceSnapshot: number;
-            quantity: number;
-            productVariantId: string | null;
-        })[];
-    }[]>;
     listUserOrders(userId: string): Promise<{
         id: string;
         createdAt: Date;

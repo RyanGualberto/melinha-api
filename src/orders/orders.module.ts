@@ -5,6 +5,7 @@ import { PrismaService } from '../config/prisma-service';
 import { OrdersController } from './orders.controller';
 import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
+import { PusherService } from 'src/pusher/pusher.service';
 
 @Module({
   controllers: [OrdersController],
@@ -14,6 +15,7 @@ import { MailService } from '../mail/mail.service';
     PrismaService,
     SettingsService,
     MailService,
+    PusherService,
   ],
 })
 export class OrdersModule {}

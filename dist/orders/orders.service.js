@@ -16,12 +16,14 @@ const client_1 = require("@prisma/client");
 const orders_gateway_1 = require("./orders.gateway");
 const settings_service_1 = require("../settings/settings.service");
 const mail_service_1 = require("../mail/mail.service");
+const pusher_service_1 = require("../pusher/pusher.service");
 let OrdersService = class OrdersService {
-    constructor(prismaService, ordersGateway, settingsService, mailService) {
+    constructor(prismaService, ordersGateway, settingsService, mailService, pusherService) {
         this.prismaService = prismaService;
         this.ordersGateway = ordersGateway;
         this.settingsService = settingsService;
         this.mailService = mailService;
+        this.pusherService = pusherService;
     }
     async create(createOrderDto) {
         const storeSettings = await this.settingsService.findOne();
@@ -99,6 +101,11 @@ let OrdersService = class OrdersService {
             },
         });
         this.ordersGateway.server.emit('orderCreated', order);
+        await this.pusherService.trigger('orders', 'orderCreated', order).then(() => {
+            console.log('Pusher triggered');
+        }, (error) => {
+            console.error('Pusher error:', error);
+        });
         return order;
     }
     async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, period, }) {
@@ -252,52 +259,6 @@ let OrdersService = class OrdersService {
         };
         return result;
     }
-    async findNewOrders() {
-        const newOrders = await this.prismaService.order.findMany({
-            select: {
-                products: {
-                    include: {
-                        variants: true,
-                    },
-                },
-                addressSnapshot: true,
-                id: true,
-                isWithdrawal: true,
-                discount: true,
-                observation: true,
-                deliveryCost: true,
-                createdAt: true,
-                deliveryTime: true,
-                status: true,
-                total: true,
-                userSnapshot: true,
-                paymentChange: true,
-                paymentMethod: true,
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-            where: {
-                new: true,
-            },
-        });
-        newOrders.forEach((order) => {
-            this.prismaService.order
-                .update({
-                where: { id: order.id },
-                data: {
-                    new: false,
-                },
-            })
-                .then(() => {
-                this.ordersGateway.server.emit('orderCreated', order);
-            })
-                .catch(() => {
-                console.log('Error updating order to not new');
-            });
-        });
-        return newOrders;
-    }
     async listUserOrders(userId) {
         return await this.prismaService.order.findMany({
             where: {
@@ -364,6 +325,13 @@ let OrdersService = class OrdersService {
                 .catch(() => { });
         }
         this.ordersGateway.server.emit('orderUpdated', order);
+        await this.pusherService
+            .trigger(`orders_user_${order.userId}`, 'orderUpdated', order)
+            .then(() => {
+            console.log('Pusher triggered');
+        }, (error) => {
+            console.error('Pusher error:', error);
+        });
         return order;
     }
     async remove(id) {
@@ -378,6 +346,7 @@ exports.OrdersService = OrdersService = __decorate([
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         orders_gateway_1.OrdersGateway,
         settings_service_1.SettingsService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        pusher_service_1.PusherService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map
