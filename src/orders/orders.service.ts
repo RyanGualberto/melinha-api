@@ -170,17 +170,17 @@ export class OrdersService {
     }
 
     if (period && period !== 'all') {
-      const now = new Date();
-      const localOffset = now.getTimezoneOffset() * 60000; // diferença local em ms
-
       function getExpedientRange(daysAgo: number) {
-        const start = new Date(Date.now() - localOffset); // ajusta para o horário local
-        start.setDate(start.getDate() - daysAgo);
-        start.setHours(10, 0, 0, 0); // 10h da manhã
+        const now = new Date();
+
+        // Força horário de Brasília (UTC-3) manualmente
+        const start = new Date(now);
+        start.setUTCDate(start.getUTCDate() - daysAgo);
+        start.setUTCHours(13, 0, 0, 0); // 10h BR = 13h UTC
 
         const end = new Date(start);
-        end.setDate(end.getDate() + 1);
-        end.setHours(2, 0, 0, 0); // 2h da manhã do dia seguinte
+        end.setUTCDate(end.getUTCDate() + 1);
+        end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
 
         return { start, end };
       }
@@ -199,21 +199,24 @@ export class OrdersService {
         }
 
         case 'last3Days': {
-          const { start } = getExpedientRange(2); // começa 2 dias atrás, pois inclui hoje
-          const end = new Date();
-          end.setHours(2, 0, 0, 0);
-          end.setDate(end.getDate() + 1); // até 2h de amanhã
+          const { start } = getExpedientRange(2);
+          const now = new Date();
+          const end = new Date(now);
+          end.setUTCDate(end.getUTCDate() + 1);
+          end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
           filters.createdAt = { gte: start, lt: end };
           break;
         }
 
         case 'lastMonth': {
           const start = new Date();
-          start.setMonth(start.getMonth() - 1);
-          start.setHours(10, 0, 0, 0); // início de expediente do dia
+          start.setUTCMonth(start.getUTCMonth() - 1);
+          start.setUTCHours(13, 0, 0, 0); // 10h BR = 13h UTC
+
           const end = new Date();
-          end.setDate(end.getDate() + 1);
-          end.setHours(2, 0, 0, 0);
+          end.setUTCDate(end.getUTCDate() + 1);
+          end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
+
           filters.createdAt = { gte: start, lt: end };
           break;
         }
