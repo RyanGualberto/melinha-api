@@ -17,119 +17,73 @@ let DashboardService = class DashboardService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    async findAll() {
+    async findAll({ from, to, }) {
         const totalClients = await this.prismaService.user.count({
             where: { role: 'user' },
         });
-        const now = new Date();
-        const last30Days = new Date();
-        last30Days.setDate(now.getDate() - 30);
-        const lastFriday = new Date();
-        const currentDay = now.getDay();
-        const daysSinceFriday = ((currentDay + 1) % 7) + 1;
-        lastFriday.setDate(now.getDate() - daysSinceFriday);
-        lastFriday.setHours(0, 0, 0, 0);
-        const mondayAt2AM = new Date(lastFriday);
-        mondayAt2AM.setDate(lastFriday.getDate() + 3);
-        mondayAt2AM.setHours(2, 0, 0, 0);
-        const ordersLast30Days = await this.prismaService.order.count({
+        let period = undefined;
+        if (from && to) {
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+            fromDate.setUTCHours(13, 0, 0, 0);
+            toDate.setUTCDate(toDate.getUTCDate() + 1);
+            toDate.setUTCHours(5, 0, 0, 0);
+            period = {
+                gte: fromDate,
+                lt: toDate,
+            };
+        }
+        const ordersPeriod = await this.prismaService.order.count({
             where: {
                 status: {
                     not: client_1.OrderStatus.CANCELED,
                 },
-                createdAt: { gte: last30Days },
+                createdAt: period,
             },
         });
-        const ordersLastWeekend = await this.prismaService.order.count({
+        const revenuePeriod = await this.prismaService.order.aggregate({
             where: {
                 status: {
                     not: client_1.OrderStatus.CANCELED,
                 },
-                createdAt: { gte: lastFriday, lte: mondayAt2AM },
-            },
-        });
-        const revenueLast30Days = await this.prismaService.order.aggregate({
-            where: {
-                status: {
-                    not: client_1.OrderStatus.CANCELED,
-                },
-                createdAt: { gte: last30Days },
+                createdAt: period,
             },
             _sum: { total: true },
         });
-        const revenueLastWeekend = await this.prismaService.order.aggregate({
-            where: {
-                status: {
-                    not: client_1.OrderStatus.CANCELED,
-                },
-                createdAt: { gte: lastFriday, lte: mondayAt2AM },
-            },
-            _sum: { total: true },
-        });
-        const bestWorstSellingItemLast30Days = await this.prismaService.orderProduct.groupBy({
+        const bestWorstSellingItemPeriod = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
             where: {
                 order: {
                     status: {
                         not: client_1.OrderStatus.CANCELED,
                     },
-                    createdAt: { gte: last30Days },
+                    createdAt: period,
                 },
             },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'desc' } },
             take: 1,
         });
-        const leastSellingItemLast30Days = await this.prismaService.orderProduct.groupBy({
+        const leastSellingItemPeriod = await this.prismaService.orderProduct.groupBy({
             by: ['productTitleSnapshot'],
             where: {
                 order: {
                     status: {
                         not: client_1.OrderStatus.CANCELED,
                     },
-                    createdAt: { gte: last30Days },
+                    createdAt: period,
                 },
             },
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: 'asc' } },
             take: 1,
         });
-        const bestWorstSellingItemLastWeekend = await this.prismaService.orderProduct.groupBy({
-            by: ['productTitleSnapshot'],
-            where: {
-                order: {
-                    status: {
-                        not: client_1.OrderStatus.CANCELED,
-                    },
-                    createdAt: { gte: lastFriday, lte: mondayAt2AM },
-                },
-            },
-            _sum: { quantity: true },
-            orderBy: { _sum: { quantity: 'desc' } },
-            take: 1,
-        });
-        const leastSellingItemLastWeekend = await this.prismaService.orderProduct.groupBy({
-            by: ['productTitleSnapshot'],
-            where: {
-                order: {
-                    status: {
-                        not: client_1.OrderStatus.CANCELED,
-                    },
-                    createdAt: { gte: lastFriday, lte: mondayAt2AM },
-                },
-            },
-            _sum: { quantity: true },
-            orderBy: { _sum: { quantity: 'asc' } },
-            take: 1,
-        });
-        const addressWithOrdersLast30Days = await this.prismaService.order.findMany({
+        const addressWithOrdersPeriod = await this.prismaService.order.findMany({
             where: {
                 status: {
                     not: client_1.OrderStatus.CANCELED,
                 },
-                createdAt: {
-                    gte: last30Days,
-                },
+                createdAt: period,
                 addressId: {
                     not: null,
                 },
@@ -138,66 +92,33 @@ let DashboardService = class DashboardService {
                 addressSnapshot: true,
             },
         });
-        const districtCountLast30Days = {};
-        addressWithOrdersLast30Days.forEach((order) => {
+        const districtCountPeriod = {};
+        addressWithOrdersPeriod.forEach((order) => {
             try {
                 const address = JSON.parse(order.addressSnapshot);
                 const district = address.district;
                 if (district) {
-                    districtCountLast30Days[district] =
-                        (districtCountLast30Days[district] || 0) + 1;
+                    districtCountPeriod[district] =
+                        (districtCountPeriod[district] || 0) + 1;
                 }
             }
             catch (error) {
                 console.error('Erro ao parsear addressSnapshot:', error);
             }
         });
-        const sortedDistrictsLast30Days = Object.entries(districtCountLast30Days).sort((a, b) => b[1] - a[1]);
-        const bestWorstSellingNeighborhoodLast30Days = sortedDistrictsLast30Days[0] || ['Nenhum', 0];
-        const leastSellingNeighborhoodLast30Days = sortedDistrictsLast30Days[sortedDistrictsLast30Days.length - 1] || ['Nenhum', 0];
-        const addressWithOrdersLastWeekend = await this.prismaService.order.findMany({
-            where: {
-                status: {
-                    not: client_1.OrderStatus.CANCELED,
-                },
-                createdAt: {
-                    gte: lastFriday,
-                    lte: mondayAt2AM,
-                },
-                addressId: {
-                    not: null,
-                },
-            },
-            select: {
-                addressSnapshot: true,
-            },
-        });
-        const districtCountLastWeekend = {};
-        addressWithOrdersLastWeekend.forEach((order) => {
-            try {
-                const address = JSON.parse(order.addressSnapshot);
-                const district = address.district;
-                if (district) {
-                    districtCountLastWeekend[district] =
-                        (districtCountLastWeekend[district] || 0) + 1;
-                }
-            }
-            catch (error) {
-                console.error('Erro ao parsear addressSnapshot:', error);
-            }
-        });
-        const sortedDistrictsLastWeekend = Object.entries(districtCountLastWeekend).sort((a, b) => b[1] - a[1]);
-        const bestWorstSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[0] || ['Nenhum', 0];
-        const leastSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[sortedDistrictsLastWeekend.length - 1] || ['Nenhum', 0];
-        const orderProductsLast30Days = await this.prismaService.orderProduct.findMany({
+        const sortedDistrictsPeriod = Object.entries(districtCountPeriod).sort((a, b) => b[1] - a[1]);
+        const bestWorstSellingNeighborhoodPeriod = sortedDistrictsPeriod[0] || [
+            'Nenhum',
+            0,
+        ];
+        const leastSellingNeighborhoodPeriod = sortedDistrictsPeriod[sortedDistrictsPeriod.length - 1] || ['Nenhum', 0];
+        const orderProductsPeriod = await this.prismaService.orderProduct.findMany({
             where: {
                 order: {
                     status: {
                         not: client_1.OrderStatus.CANCELED,
                     },
-                    createdAt: {
-                        gte: last30Days,
-                    },
+                    createdAt: period,
                 },
             },
             include: {
@@ -208,25 +129,23 @@ let DashboardService = class DashboardService {
                 },
             },
         });
-        const ordersLast30DaysWithDeliveryCost = await this.prismaService.order.findMany({
+        const ordersPeriodWithDeliveryCost = await this.prismaService.order.findMany({
             where: {
                 status: {
                     not: client_1.OrderStatus.CANCELED,
                 },
-                createdAt: {
-                    gte: last30Days,
-                },
+                createdAt: period,
             },
             select: {
                 deliveryCost: true,
             },
         });
         let totalCost = 0;
-        orderProductsLast30Days.forEach((op) => {
+        orderProductsPeriod.forEach((op) => {
             totalCost += (op.product?.cost || 0) * op.quantity;
         });
         let totalDeliveryCost = 0;
-        ordersLast30DaysWithDeliveryCost.forEach((order) => {
+        ordersPeriodWithDeliveryCost.forEach((order) => {
             totalDeliveryCost += order.deliveryCost || 0;
         });
         const ordersForWorkedDays = await this.prismaService.order.findMany({
@@ -234,9 +153,7 @@ let DashboardService = class DashboardService {
                 status: {
                     not: client_1.OrderStatus.CANCELED,
                 },
-                createdAt: {
-                    gte: last30Days,
-                },
+                createdAt: period,
             },
             select: {
                 createdAt: true,
@@ -256,23 +173,17 @@ let DashboardService = class DashboardService {
         const deliveryFixedCostPerDay = 50;
         const deliveryFixedTotalCost = totalWorkedDays * deliveryFixedCostPerDay;
         const totalDeliveryCostMoreDeliveryFixedTotalCost = deliveryFixedTotalCost + totalDeliveryCost;
-        const totalRevenue = revenueLast30Days._sum.total || 0;
+        const totalRevenue = revenuePeriod._sum.total || 0;
         const realProfit = totalRevenue - totalCost - totalDeliveryCostMoreDeliveryFixedTotalCost;
         return {
-            averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
+            averageTicket: (revenuePeriod._sum.total || 0) / ordersPeriod,
             totalClients,
-            ordersLast30Days,
-            ordersLastWeekend,
-            revenueLast30Days: revenueLast30Days._sum.total || 0,
-            revenueLastWeekend: revenueLastWeekend._sum.total || 0,
-            bestSellingItemLast30Days: bestWorstSellingItemLast30Days[0] || null,
-            leastSellingItemLast30Days: leastSellingItemLast30Days[0] || null,
-            bestSellingItemLastWeekend: bestWorstSellingItemLastWeekend[0] || null,
-            leastSellingItemLastWeekend: leastSellingItemLastWeekend[0] || null,
-            bestSellingNeighborhoodLast30Days: bestWorstSellingNeighborhoodLast30Days,
-            leastSellingNeighborhoodLast30Days: leastSellingNeighborhoodLast30Days,
-            bestWorstSellingNeighborhoodLastWeekend: bestWorstSellingNeighborhoodLastWeekend,
-            leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
+            ordersPeriod,
+            revenuePeriod: revenuePeriod._sum.total || 0,
+            bestSellingItemPeriod: bestWorstSellingItemPeriod[0] || null,
+            leastSellingItemPeriod: leastSellingItemPeriod[0] || null,
+            bestSellingNeighborhoodPeriod: bestWorstSellingNeighborhoodPeriod,
+            leastSellingNeighborhoodPeriod: leastSellingNeighborhoodPeriod,
             totalWorkedDays,
             deliveryFixedTotalCost,
             totalDeliveryCost,

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { AdminGuard } from 'src/auth/auth.guard';
 
@@ -8,7 +8,10 @@ export class DashboardController {
 
   @UseGuards(AdminGuard)
   @Get()
-  async findAll() {
-    return await this.dashboardService.findAll();
+  async findAll(
+    @Query('from') from: string | undefined,
+    @Query('to') to: string | undefined,
+  ) {
+    return await this.dashboardService.findAll({ from, to });
   }
 }

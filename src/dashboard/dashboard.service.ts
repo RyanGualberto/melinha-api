@@ -5,70 +5,64 @@ import { Address, OrderStatus } from '@prisma/client';
 @Injectable()
 export class DashboardService {
   constructor(private readonly prismaService: PrismaService) {}
-  async findAll() {
+  async findAll({
+    from,
+    to,
+  }: {
+    from: string | undefined;
+    to: string | undefined;
+  }) {
     const totalClients = await this.prismaService.user.count({
       where: { role: 'user' },
     });
-    const now = new Date();
 
-    // Últimos 30 dias
-    const last30Days = new Date();
-    last30Days.setDate(now.getDate() - 30);
+    let period:
+      | {
+          gte: Date;
+          lt: Date;
+        }
+      | undefined = undefined;
 
-    // Encontrar a última sexta-feira
-    const lastFriday = new Date();
-    const currentDay = now.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
-    const daysSinceFriday = ((currentDay + 1) % 7) + 1; // Distância do último sábado para sexta
-    lastFriday.setDate(now.getDate() - daysSinceFriday);
-    lastFriday.setHours(0, 0, 0, 0); // Sexta-feira às 00h00
+    if (from && to) {
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
 
-    // Definir o fim do final de semana (segunda-feira às 02h00)
-    const mondayAt2AM = new Date(lastFriday);
-    mondayAt2AM.setDate(lastFriday.getDate() + 3); // Pular para segunda-feira
-    mondayAt2AM.setHours(2, 0, 0, 0); // Segunda-feira às 02h00
+      // Ajustar para início do expediente (10h BR = 13h UTC)
+      fromDate.setUTCHours(13, 0, 0, 0);
+
+      // Ajustar para fim do expediente do dia seguinte (2h BR = 5h UTC)
+      toDate.setUTCDate(toDate.getUTCDate() + 1);
+      toDate.setUTCHours(5, 0, 0, 0);
+
+      period = {
+        gte: fromDate,
+        lt: toDate,
+      };
+    }
 
     // Quantidade de pedidos nos períodos
-    const ordersLast30Days = await this.prismaService.order.count({
+    const ordersPeriod = await this.prismaService.order.count({
       where: {
         status: {
           not: OrderStatus.CANCELED,
         },
-        createdAt: { gte: last30Days },
-      },
-    });
-
-    const ordersLastWeekend = await this.prismaService.order.count({
-      where: {
-        status: {
-          not: OrderStatus.CANCELED,
-        },
-        createdAt: { gte: lastFriday, lte: mondayAt2AM },
+        createdAt: period,
       },
     });
 
     // Valor faturado nos períodos
-    const revenueLast30Days = await this.prismaService.order.aggregate({
+    const revenuePeriod = await this.prismaService.order.aggregate({
       where: {
         status: {
           not: OrderStatus.CANCELED,
         },
-        createdAt: { gte: last30Days },
-      },
-      _sum: { total: true },
-    });
-
-    const revenueLastWeekend = await this.prismaService.order.aggregate({
-      where: {
-        status: {
-          not: OrderStatus.CANCELED,
-        },
-        createdAt: { gte: lastFriday, lte: mondayAt2AM },
+        createdAt: period,
       },
       _sum: { total: true },
     });
 
     // Item mais e menos vendido nos últimos 30 dias
-    const bestWorstSellingItemLast30Days =
+    const bestWorstSellingItemPeriod =
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
         where: {
@@ -76,7 +70,7 @@ export class DashboardService {
             status: {
               not: OrderStatus.CANCELED,
             },
-            createdAt: { gte: last30Days },
+            createdAt: period,
           },
         },
         _sum: { quantity: true },
@@ -84,7 +78,7 @@ export class DashboardService {
         take: 1, // Mais vendido
       });
 
-    const leastSellingItemLast30Days =
+    const leastSellingItemPeriod =
       await this.prismaService.orderProduct.groupBy({
         by: ['productTitleSnapshot'],
         where: {
@@ -92,7 +86,7 @@ export class DashboardService {
             status: {
               not: OrderStatus.CANCELED,
             },
-            createdAt: { gte: last30Days },
+            createdAt: period,
           },
         },
         _sum: { quantity: true },
@@ -100,160 +94,75 @@ export class DashboardService {
         take: 1, // Menos vendido
       });
 
-    // Item mais e menos vendido no último final de semana
-    const bestWorstSellingItemLastWeekend =
-      await this.prismaService.orderProduct.groupBy({
-        by: ['productTitleSnapshot'],
-        where: {
-          order: {
-            status: {
-              not: OrderStatus.CANCELED,
-            },
-            createdAt: { gte: lastFriday, lte: mondayAt2AM },
-          },
+    const addressWithOrdersPeriod = await this.prismaService.order.findMany({
+      where: {
+        status: {
+          not: OrderStatus.CANCELED,
         },
-        _sum: { quantity: true },
-        orderBy: { _sum: { quantity: 'desc' } },
-        take: 1, // Mais vendido
-      });
-
-    const leastSellingItemLastWeekend =
-      await this.prismaService.orderProduct.groupBy({
-        by: ['productTitleSnapshot'],
-        where: {
-          order: {
-            status: {
-              not: OrderStatus.CANCELED,
-            },
-            createdAt: { gte: lastFriday, lte: mondayAt2AM },
-          },
-        },
-        _sum: { quantity: true },
-        orderBy: { _sum: { quantity: 'asc' } },
-        take: 1, // Menos vendido
-      });
-
-    const addressWithOrdersLast30Days = await this.prismaService.order.findMany(
-      {
-        where: {
-          status: {
-            not: OrderStatus.CANCELED,
-          },
-          createdAt: {
-            gte: last30Days,
-          },
-          addressId: {
-            not: null,
-          },
-        },
-        select: {
-          addressSnapshot: true,
+        createdAt: period,
+        addressId: {
+          not: null,
         },
       },
+      select: {
+        addressSnapshot: true,
+      },
+    });
+
+    const districtCountPeriod: Record<string, number> = {};
+
+    addressWithOrdersPeriod.forEach((order) => {
+      try {
+        const address = JSON.parse(order.addressSnapshot as string) as Address;
+        const district = address.district;
+
+        if (district) {
+          districtCountPeriod[district] =
+            (districtCountPeriod[district] || 0) + 1;
+        }
+      } catch (error) {
+        console.error('Erro ao parsear addressSnapshot:', error);
+      }
+    });
+
+    const sortedDistrictsPeriod = Object.entries(districtCountPeriod).sort(
+      (a, b) => b[1] - a[1],
     );
-
-    const districtCountLast30Days: Record<string, number> = {};
-
-    addressWithOrdersLast30Days.forEach((order) => {
-      try {
-        const address = JSON.parse(order.addressSnapshot as string) as Address;
-        const district = address.district;
-
-        if (district) {
-          districtCountLast30Days[district] =
-            (districtCountLast30Days[district] || 0) + 1;
-        }
-      } catch (error) {
-        console.error('Erro ao parsear addressSnapshot:', error);
-      }
-    });
-
-    const sortedDistrictsLast30Days = Object.entries(
-      districtCountLast30Days,
-    ).sort((a, b) => b[1] - a[1]);
-    const bestWorstSellingNeighborhoodLast30Days =
-      sortedDistrictsLast30Days[0] || ['Nenhum', 0];
-    const leastSellingNeighborhoodLast30Days = sortedDistrictsLast30Days[
-      sortedDistrictsLast30Days.length - 1
-    ] || ['Nenhum', 0];
-
-    const addressWithOrdersLastWeekend =
-      await this.prismaService.order.findMany({
-        where: {
-          status: {
-            not: OrderStatus.CANCELED,
-          },
-          createdAt: {
-            gte: lastFriday,
-            lte: mondayAt2AM,
-          },
-          addressId: {
-            not: null,
-          },
-        },
-        select: {
-          addressSnapshot: true,
-        },
-      });
-
-    const districtCountLastWeekend: Record<string, number> = {};
-
-    addressWithOrdersLastWeekend.forEach((order) => {
-      try {
-        const address = JSON.parse(order.addressSnapshot as string) as Address;
-        const district = address.district;
-
-        if (district) {
-          districtCountLastWeekend[district] =
-            (districtCountLastWeekend[district] || 0) + 1;
-        }
-      } catch (error) {
-        console.error('Erro ao parsear addressSnapshot:', error);
-      }
-    });
-
-    const sortedDistrictsLastWeekend = Object.entries(
-      districtCountLastWeekend,
-    ).sort((a, b) => b[1] - a[1]);
-
-    const bestWorstSellingNeighborhoodLastWeekend =
-      sortedDistrictsLastWeekend[0] || ['Nenhum', 0];
-    const leastSellingNeighborhoodLastWeekend = sortedDistrictsLastWeekend[
-      sortedDistrictsLastWeekend.length - 1
+    const bestWorstSellingNeighborhoodPeriod = sortedDistrictsPeriod[0] || [
+      'Nenhum',
+      0,
+    ];
+    const leastSellingNeighborhoodPeriod = sortedDistrictsPeriod[
+      sortedDistrictsPeriod.length - 1
     ] || ['Nenhum', 0];
 
     // Buscar OrderProducts dos últimos 30 dias com custo do produto
-    const orderProductsLast30Days =
-      await this.prismaService.orderProduct.findMany({
-        where: {
-          order: {
-            status: {
-              not: OrderStatus.CANCELED,
-            },
-            createdAt: {
-              gte: last30Days,
-            },
+    const orderProductsPeriod = await this.prismaService.orderProduct.findMany({
+      where: {
+        order: {
+          status: {
+            not: OrderStatus.CANCELED,
+          },
+          createdAt: period,
+        },
+      },
+      include: {
+        product: {
+          select: {
+            cost: true,
           },
         },
-        include: {
-          product: {
-            select: {
-              cost: true,
-            },
-          },
-        },
-      });
+      },
+    });
 
     // Buscar Orders válidos dos últimos 30 dias para calcular o total de frete
-    const ordersLast30DaysWithDeliveryCost =
+    const ordersPeriodWithDeliveryCost =
       await this.prismaService.order.findMany({
         where: {
           status: {
             not: OrderStatus.CANCELED,
           },
-          createdAt: {
-            gte: last30Days,
-          },
+          createdAt: period,
         },
         select: {
           deliveryCost: true,
@@ -262,13 +171,13 @@ export class DashboardService {
 
     // Calcular total de custo
     let totalCost = 0;
-    orderProductsLast30Days.forEach((op) => {
+    orderProductsPeriod.forEach((op) => {
       totalCost += (op.product?.cost || 0) * op.quantity;
     });
 
     // Calcular total de frete
     let totalDeliveryCost = 0;
-    ordersLast30DaysWithDeliveryCost.forEach((order) => {
+    ordersPeriodWithDeliveryCost.forEach((order) => {
       totalDeliveryCost += order.deliveryCost || 0;
     });
 
@@ -277,9 +186,7 @@ export class DashboardService {
         status: {
           not: OrderStatus.CANCELED,
         },
-        createdAt: {
-          gte: last30Days,
-        },
+        createdAt: period,
       },
       select: {
         createdAt: true,
@@ -313,26 +220,19 @@ export class DashboardService {
       deliveryFixedTotalCost + totalDeliveryCost;
 
     // Calcular lucro
-    const totalRevenue = revenueLast30Days._sum.total || 0;
+    const totalRevenue = revenuePeriod._sum.total || 0;
     const realProfit =
       totalRevenue - totalCost - totalDeliveryCostMoreDeliveryFixedTotalCost;
 
     return {
-      averageTicket: (revenueLast30Days._sum.total || 0) / ordersLast30Days,
+      averageTicket: (revenuePeriod._sum.total || 0) / ordersPeriod,
       totalClients,
-      ordersLast30Days,
-      ordersLastWeekend,
-      revenueLast30Days: revenueLast30Days._sum.total || 0,
-      revenueLastWeekend: revenueLastWeekend._sum.total || 0,
-      bestSellingItemLast30Days: bestWorstSellingItemLast30Days[0] || null,
-      leastSellingItemLast30Days: leastSellingItemLast30Days[0] || null,
-      bestSellingItemLastWeekend: bestWorstSellingItemLastWeekend[0] || null,
-      leastSellingItemLastWeekend: leastSellingItemLastWeekend[0] || null,
-      bestSellingNeighborhoodLast30Days: bestWorstSellingNeighborhoodLast30Days,
-      leastSellingNeighborhoodLast30Days: leastSellingNeighborhoodLast30Days,
-      bestWorstSellingNeighborhoodLastWeekend:
-        bestWorstSellingNeighborhoodLastWeekend,
-      leastSellingNeighborhoodLastWeekend: leastSellingNeighborhoodLastWeekend,
+      ordersPeriod,
+      revenuePeriod: revenuePeriod._sum.total || 0,
+      bestSellingItemPeriod: bestWorstSellingItemPeriod[0] || null,
+      leastSellingItemPeriod: leastSellingItemPeriod[0] || null,
+      bestSellingNeighborhoodPeriod: bestWorstSellingNeighborhoodPeriod,
+      leastSellingNeighborhoodPeriod: leastSellingNeighborhoodPeriod,
       totalWorkedDays,
       deliveryFixedTotalCost,
       totalDeliveryCost,

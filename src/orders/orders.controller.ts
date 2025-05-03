@@ -42,8 +42,8 @@ export class OrdersController {
     @Query('status') status: 'all' | keyof typeof OrderStatus,
     @Query('paymentMethod') paymentMethod: 'all' | 'money' | 'card' | 'pix',
     @Query('deliveryMethod') deliveryMethod: 'delivery' | 'withdrawal' | 'all',
-    @Query('period')
-    period: 'all' | 'today' | 'yesterday' | 'last3Days' | 'lastMonth',
+    @Query('from') from: string,
+    @Query('to') to: string,
   ) {
     return await this.ordersService.findAllPaginated({
       page: Number(page),
@@ -51,7 +51,8 @@ export class OrdersController {
       customerName: customerName,
       deliveryMethod,
       paymentMethod,
-      period,
+      from,
+      to,
       status,
     });
   }

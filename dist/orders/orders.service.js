@@ -108,7 +108,7 @@ let OrdersService = class OrdersService {
         });
         return order;
     }
-    async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, period, }) {
+    async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, from, to, }) {
         const skip = page * perPage;
         const filters = {};
         if (status && status !== 'all') {
@@ -138,36 +138,16 @@ let OrdersService = class OrdersService {
                 ],
             };
         }
-        if (period && period !== 'all') {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            let startDate = null;
-            switch (period) {
-                case 'today':
-                    startDate = today;
-                    break;
-                case 'yesterday':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 1);
-                    filters.createdAt = {
-                        gte: startDate,
-                        lt: today,
-                    };
-                    break;
-                case 'last3Days':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 3);
-                    break;
-                case 'lastMonth':
-                    startDate = new Date(today);
-                    startDate.setMonth(today.getMonth() - 1);
-                    break;
-            }
-            if (startDate && period !== 'yesterday') {
-                filters.createdAt = {
-                    gte: startDate,
-                };
-            }
+        if (from && to) {
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+            fromDate.setUTCHours(13, 0, 0, 0);
+            toDate.setUTCDate(toDate.getUTCDate() + 1);
+            toDate.setUTCHours(5, 0, 0, 0);
+            filters.createdAt = {
+                gte: fromDate,
+                lt: toDate,
+            };
         }
         const orders = await this.prismaService.order.findMany({
             where: filters,
@@ -220,15 +200,24 @@ let OrdersService = class OrdersService {
     }
     async findOrdersInProgress() {
         const now = new Date();
-        const currentHour = now.getHours();
-        const startDate = new Date(now);
-        if (currentHour < 2) {
-            startDate.setDate(startDate.getDate() - 1);
-        }
-        startDate.setHours(9, 0, 0, 0);
-        const endDate = new Date(startDate);
+        const localOffset = now.getTimezoneOffset() * 60000;
+        const startDate = new Date(Date.now() - localOffset);
+        startDate.setHours(10, 0, 0, 0);
+        const endDate = new Date(Date.now() - localOffset);
         endDate.setDate(endDate.getDate() + 1);
         endDate.setHours(2, 0, 0, 0);
+        if (now.getHours() < 10) {
+            startDate.setDate(startDate.getDate() - 1);
+            endDate.setDate(endDate.getDate() - 1);
+        }
+        if (now.getHours() >= 2) {
+            startDate.setDate(startDate.getDate() + 1);
+            endDate.setDate(endDate.getDate() + 1);
+        }
+        if (now.getHours() >= 2) {
+            startDate.setDate(startDate.getDate() + 1);
+            endDate.setDate(endDate.getDate() + 1);
+        }
         const orders = await this.prismaService.order.findMany({
             where: {
                 createdAt: {

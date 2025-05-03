@@ -30,14 +30,15 @@ let OrdersController = class OrdersController {
         createOrderDto.userSnapshot = JSON.stringify(req.user);
         return await this.ordersService.create(createOrderDto);
     }
-    async findAll(page, perPage, customerName, status, paymentMethod, deliveryMethod, period) {
+    async findAll(page, perPage, customerName, status, paymentMethod, deliveryMethod, from, to) {
         return await this.ordersService.findAllPaginated({
             page: Number(page),
             perPage: Number(perPage),
             customerName: customerName,
             deliveryMethod,
             paymentMethod,
-            period,
+            from,
+            to,
             status,
         });
     }
@@ -73,9 +74,10 @@ __decorate([
     __param(3, (0, common_1.Query)('status')),
     __param(4, (0, common_1.Query)('paymentMethod')),
     __param(5, (0, common_1.Query)('deliveryMethod')),
-    __param(6, (0, common_1.Query)('period')),
+    __param(6, (0, common_1.Query)('from')),
+    __param(7, (0, common_1.Query)('to')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Object, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, Object, String, String, String, String]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "findAll", null);
 __decorate([

@@ -124,7 +124,8 @@ export class OrdersService {
     status,
     deliveryMethod,
     paymentMethod,
-    period,
+    from,
+    to,
   }: {
     page?: number;
     perPage?: number;
@@ -132,7 +133,8 @@ export class OrdersService {
     status?: 'all' | keyof typeof OrderStatus;
     deliveryMethod?: 'delivery' | 'withdrawal' | 'all';
     paymentMethod?: 'all' | 'money' | 'card' | 'pix';
-    period?: 'all' | 'today' | 'yesterday' | 'last3Days' | 'lastMonth';
+    from?: string | undefined;
+    to?: string | undefined;
   }) {
     const skip = page * perPage;
 
@@ -169,58 +171,21 @@ export class OrdersService {
       };
     }
 
-    if (period && period !== 'all') {
-      function getExpedientRange(daysAgo: number) {
-        const now = new Date();
+    if (from && to) {
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
 
-        // Força horário de Brasília (UTC-3) manualmente
-        const start = new Date(now);
-        start.setUTCDate(start.getUTCDate() - daysAgo);
-        start.setUTCHours(13, 0, 0, 0); // 10h BR = 13h UTC
+      // Ajustar para início do expediente (10h BR = 13h UTC)
+      fromDate.setUTCHours(13, 0, 0, 0);
 
-        const end = new Date(start);
-        end.setUTCDate(end.getUTCDate() + 1);
-        end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
+      // Ajustar para fim do expediente do dia seguinte (2h BR = 5h UTC)
+      toDate.setUTCDate(toDate.getUTCDate() + 1);
+      toDate.setUTCHours(5, 0, 0, 0);
 
-        return { start, end };
-      }
-
-      switch (period) {
-        case 'today': {
-          const { start, end } = getExpedientRange(0);
-          filters.createdAt = { gte: start, lt: end };
-          break;
-        }
-
-        case 'yesterday': {
-          const { start, end } = getExpedientRange(1);
-          filters.createdAt = { gte: start, lt: end };
-          break;
-        }
-
-        case 'last3Days': {
-          const { start } = getExpedientRange(2);
-          const now = new Date();
-          const end = new Date(now);
-          end.setUTCDate(end.getUTCDate() + 1);
-          end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
-          filters.createdAt = { gte: start, lt: end };
-          break;
-        }
-
-        case 'lastMonth': {
-          const start = new Date();
-          start.setUTCMonth(start.getUTCMonth() - 1);
-          start.setUTCHours(13, 0, 0, 0); // 10h BR = 13h UTC
-
-          const end = new Date();
-          end.setUTCDate(end.getUTCDate() + 1);
-          end.setUTCHours(5, 0, 0, 0); // 2h BR = 5h UTC
-
-          filters.createdAt = { gte: start, lt: end };
-          break;
-        }
-      }
+      filters.createdAt = {
+        gte: fromDate,
+        lt: toDate,
+      };
     }
 
     const orders = await this.prismaService.order.findMany({
