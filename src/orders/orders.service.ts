@@ -170,37 +170,53 @@ export class OrdersService {
     }
 
     if (period && period !== 'all') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now = new Date();
+      const localOffset = now.getTimezoneOffset() * 60000; // diferença local em ms
 
-      let startDate: Date | null = null;
+      function getExpedientRange(daysAgo: number) {
+        const start = new Date(Date.now() - localOffset); // ajusta para o horário local
+        start.setDate(start.getDate() - daysAgo);
+        start.setHours(10, 0, 0, 0); // 10h da manhã
 
-      switch (period) {
-        case 'today':
-          startDate = today;
-          break;
-        case 'yesterday':
-          startDate = new Date(today);
-          startDate.setDate(today.getDate() - 1);
-          filters.createdAt = {
-            gte: startDate,
-            lt: today,
-          };
-          break;
-        case 'last3Days':
-          startDate = new Date(today);
-          startDate.setDate(today.getDate() - 3);
-          break;
-        case 'lastMonth':
-          startDate = new Date(today);
-          startDate.setMonth(today.getMonth() - 1);
-          break;
+        const end = new Date(start);
+        end.setDate(end.getDate() + 1);
+        end.setHours(2, 0, 0, 0); // 2h da manhã do dia seguinte
+
+        return { start, end };
       }
 
-      if (startDate && period !== 'yesterday') {
-        filters.createdAt = {
-          gte: startDate,
-        };
+      switch (period) {
+        case 'today': {
+          const { start, end } = getExpedientRange(0);
+          filters.createdAt = { gte: start, lt: end };
+          break;
+        }
+
+        case 'yesterday': {
+          const { start, end } = getExpedientRange(1);
+          filters.createdAt = { gte: start, lt: end };
+          break;
+        }
+
+        case 'last3Days': {
+          const { start } = getExpedientRange(2); // começa 2 dias atrás, pois inclui hoje
+          const end = new Date();
+          end.setHours(2, 0, 0, 0);
+          end.setDate(end.getDate() + 1); // até 2h de amanhã
+          filters.createdAt = { gte: start, lt: end };
+          break;
+        }
+
+        case 'lastMonth': {
+          const start = new Date();
+          start.setMonth(start.getMonth() - 1);
+          start.setHours(10, 0, 0, 0); // início de expediente do dia
+          const end = new Date();
+          end.setDate(end.getDate() + 1);
+          end.setHours(2, 0, 0, 0);
+          filters.createdAt = { gte: start, lt: end };
+          break;
+        }
       }
     }
 
@@ -258,19 +274,27 @@ export class OrdersService {
 
   async findOrdersInProgress() {
     const now = new Date();
-    const currentHour = now.getHours();
-
-    // Definir o início do período
-    const startDate = new Date(now);
-    if (currentHour < 2) {
-      startDate.setDate(startDate.getDate() - 1);
-    }
-    startDate.setHours(9, 0, 0, 0);
-
-    // Definir o fim do período
-    const endDate = new Date(startDate);
+    const localOffset = now.getTimezoneOffset() * 60000; // diferença local em ms
+    const startDate = new Date(Date.now() - localOffset);
+    startDate.setHours(10, 0, 0, 0); // 10h da manhã
+    const endDate = new Date(Date.now() - localOffset);
     endDate.setDate(endDate.getDate() + 1);
-    endDate.setHours(2, 0, 0, 0);
+    endDate.setHours(2, 0, 0, 0); // 2h da manhã do dia seguinte
+    // Se o horário atual for menor que 10h, ajusta o período para o dia anterior
+    if (now.getHours() < 10) {
+      startDate.setDate(startDate.getDate() - 1);
+      endDate.setDate(endDate.getDate() - 1);
+    }
+    // Se o horário atual for maior que 2h, ajusta o período para o dia atual
+    if (now.getHours() >= 2) {
+      startDate.setDate(startDate.getDate() + 1);
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    // Se o horário atual for maior que 2h, ajusta o período para o dia atual
+    if (now.getHours() >= 2) {
+      startDate.setDate(startDate.getDate() + 1);
+      endDate.setDate(endDate.getDate() + 1);
+    }
 
     // Buscar pedidos no período com os status desejados
     const orders = await this.prismaService.order.findMany({
