@@ -48,8 +48,11 @@ let OrdersController = class OrdersController {
     async listUserOrders(req) {
         return await this.ordersService.listUserOrders(req.user?.id);
     }
-    async update(id, updateOrderDto) {
-        return await this.ordersService.update(id, updateOrderDto);
+    async listLastOrder(req) {
+        return await this.ordersService.getLastOrder(req.user?.id);
+    }
+    async update(id, updateOrderDto, req) {
+        return await this.ordersService.update(id, updateOrderDto, req.user.id);
     }
     async remove(id) {
         return await this.ordersService.remove(id);
@@ -96,12 +99,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "listUserOrders", null);
 __decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)('last-order'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "listLastOrder", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_order_dto_1.UpdateOrderDto]),
+    __metadata("design:paramtypes", [String, update_order_dto_1.UpdateOrderDto, Object]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "update", null);
 __decorate([

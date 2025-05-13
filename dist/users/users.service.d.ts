@@ -6,6 +6,7 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     create(data: CreateUserDto): Promise<User>;
+    saveToken(token: string, userId: string): Promise<void>;
     findAllPaginated({ page, perPage, clientName, }: {
         page?: number;
         perPage?: number;
@@ -53,6 +54,7 @@ export declare class UsersService {
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
+        fcmToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -66,6 +68,7 @@ export declare class UsersService {
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
+        fcmToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

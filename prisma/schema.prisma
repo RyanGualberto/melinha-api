@@ -17,6 +17,7 @@ model User {
   role         String
   resetToken   String?
   resetExpires DateTime?
+  fcmToken     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   addresses    Address[]

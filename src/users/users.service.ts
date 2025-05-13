@@ -29,6 +29,24 @@ export class UsersService {
     return record;
   }
 
+  async saveToken(token: string, userId: string) {
+    const userToken = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+    const tokenArr = userToken.fcmToken.split(',');
+    tokenArr.push(token);
+    const tokenStr = tokenArr.join(', ');
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        fcmToken: tokenStr,
+      },
+    });
+  }
+
   async findAllPaginated({
     page = 0,
     perPage = 10,

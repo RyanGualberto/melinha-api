@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from '../config/prisma-service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -7,6 +11,7 @@ import { OrdersGateway } from './orders.gateway';
 import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
 import { PusherService } from '../pusher/pusher.service';
+import { FirebaseService } from '../firebase/firebase-service';
 
 @Injectable()
 export class OrdersService {
@@ -16,6 +21,7 @@ export class OrdersService {
     private readonly settingsService: SettingsService,
     private readonly mailService: MailService,
     private readonly pusherService: PusherService,
+    private readonly notificationService: FirebaseService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -114,6 +120,23 @@ export class OrdersService {
         console.error('Pusher error:', error);
       },
     );
+    const admins = await this.prismaService.user.findMany({
+      where: {
+        role: 'admin',
+      },
+      select: {
+        fcmToken: true,
+      },
+    });
+    admins.forEach((admin) => {
+      const tokens = admin.fcmToken.split(',');
+      tokens.forEach((token) => {
+        this.notificationService
+          .sendNotification(token, 'Novo Pedido', 'Chegou um novo Pedido')
+          .then(() => console.log('notificação enviada'))
+          .catch(() => console.log('erro ao enviar notificação'));
+      });
+    });
     return order;
   }
 
@@ -306,6 +329,7 @@ export class OrdersService {
       select: {
         products: {
           include: {
+            product: true,
             variants: true,
           },
         },
@@ -342,7 +366,24 @@ export class OrdersService {
     });
   }
 
-  async update(id: string, updateOrderDto: UpdateOrderDto) {
+  async update(id: string, updateOrderDto: UpdateOrderDto, userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    const fullOrder = await this.prismaService.order.findUnique({
+      where: { id },
+    });
+
+    if (user.role !== 'admin' && fullOrder.userId !== user.id) {
+      return new ForbiddenException('no has permission');
+    }
+
     const order = await this.prismaService.order.update({
       where: { id },
       data: {
@@ -357,13 +398,9 @@ export class OrdersService {
       },
     });
 
-    const fullOrder = await this.prismaService.order.findUnique({
-      where: { id },
-    });
-
     if (updateOrderDto.status !== OrderStatus.CANCELED) {
       this.mailService
-        .sendOrderEmail(fullOrder)
+        .sendOrderEmail(order)
         .then(() => {})
         .catch(() => {});
     }
@@ -380,6 +417,28 @@ export class OrdersService {
         },
       );
     return order;
+  }
+
+  async getLastOrder(userId: string) {
+    const lastOrder = await this.prismaService.order.findFirst({
+      where: {
+        status: 'COMPLETED',
+        userId: userId,
+      },
+      include: {
+        products: {
+          include: {
+            product: true,
+            variants: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return lastOrder;
   }
 
   async remove(id: string) {

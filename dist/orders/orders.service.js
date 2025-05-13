@@ -17,13 +17,15 @@ const orders_gateway_1 = require("./orders.gateway");
 const settings_service_1 = require("../settings/settings.service");
 const mail_service_1 = require("../mail/mail.service");
 const pusher_service_1 = require("../pusher/pusher.service");
+const firebase_service_1 = require("../firebase/firebase-service");
 let OrdersService = class OrdersService {
-    constructor(prismaService, ordersGateway, settingsService, mailService, pusherService) {
+    constructor(prismaService, ordersGateway, settingsService, mailService, pusherService, notificationService) {
         this.prismaService = prismaService;
         this.ordersGateway = ordersGateway;
         this.settingsService = settingsService;
         this.mailService = mailService;
         this.pusherService = pusherService;
+        this.notificationService = notificationService;
     }
     async create(createOrderDto) {
         const storeSettings = await this.settingsService.findOne();
@@ -105,6 +107,23 @@ let OrdersService = class OrdersService {
             console.log('Pusher triggered');
         }, (error) => {
             console.error('Pusher error:', error);
+        });
+        const admins = await this.prismaService.user.findMany({
+            where: {
+                role: 'admin',
+            },
+            select: {
+                fcmToken: true,
+            },
+        });
+        admins.forEach((admin) => {
+            const tokens = admin.fcmToken.split(',');
+            tokens.forEach((token) => {
+                this.notificationService
+                    .sendNotification(token, 'Novo Pedido', 'Chegou um novo Pedido')
+                    .then(() => console.log('notificação enviada'))
+                    .catch(() => console.log('erro ao enviar notificação'));
+            });
         });
         return order;
     }
@@ -256,6 +275,7 @@ let OrdersService = class OrdersService {
             select: {
                 products: {
                     include: {
+                        product: true,
                         variants: true,
                     },
                 },
@@ -290,7 +310,21 @@ let OrdersService = class OrdersService {
             },
         });
     }
-    async update(id, updateOrderDto) {
+    async update(id, updateOrderDto, userId) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: userId,
+            },
+            omit: {
+                password: true,
+            },
+        });
+        const fullOrder = await this.prismaService.order.findUnique({
+            where: { id },
+        });
+        if (user.role !== 'admin' && fullOrder.userId !== user.id) {
+            return new common_1.ForbiddenException('no has permission');
+        }
         const order = await this.prismaService.order.update({
             where: { id },
             data: {
@@ -304,12 +338,9 @@ let OrdersService = class OrdersService {
                 },
             },
         });
-        const fullOrder = await this.prismaService.order.findUnique({
-            where: { id },
-        });
         if (updateOrderDto.status !== client_1.OrderStatus.CANCELED) {
             this.mailService
-                .sendOrderEmail(fullOrder)
+                .sendOrderEmail(order)
                 .then(() => { })
                 .catch(() => { });
         }
@@ -322,6 +353,26 @@ let OrdersService = class OrdersService {
             console.error('Pusher error:', error);
         });
         return order;
+    }
+    async getLastOrder(userId) {
+        const lastOrder = await this.prismaService.order.findFirst({
+            where: {
+                status: 'COMPLETED',
+                userId: userId,
+            },
+            include: {
+                products: {
+                    include: {
+                        product: true,
+                        variants: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+        return lastOrder;
     }
     async remove(id) {
         return await this.prismaService.order.delete({
@@ -336,6 +387,7 @@ exports.OrdersService = OrdersService = __decorate([
         orders_gateway_1.OrdersGateway,
         settings_service_1.SettingsService,
         mail_service_1.MailService,
-        pusher_service_1.PusherService])
+        pusher_service_1.PusherService,
+        firebase_service_1.FirebaseService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

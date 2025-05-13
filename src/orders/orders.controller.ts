@@ -69,13 +69,20 @@ export class OrdersController {
     return await this.ordersService.listUserOrders(req.user?.id);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
+  @Get('last-order')
+  async listLastOrder(@Req() req: Request) {
+    return await this.ordersService.getLastOrder(req.user?.id);
+  }
+
+  @UseGuards(AuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
+    @Req() req: Request,
   ) {
-    return await this.ordersService.update(id, updateOrderDto);
+    return await this.ordersService.update(id, updateOrderDto, req.user.id);
   }
 
   @UseGuards(AdminGuard)

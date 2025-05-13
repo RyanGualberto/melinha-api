@@ -18,6 +18,7 @@ export declare class AuthController {
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
+            fcmToken: string | null;
             createdAt: Date;
             updatedAt: Date;
         };

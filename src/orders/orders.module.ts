@@ -5,7 +5,8 @@ import { PrismaService } from '../config/prisma-service';
 import { OrdersController } from './orders.controller';
 import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
-import { PusherService } from 'src/pusher/pusher.service';
+import { PusherService } from '../pusher/pusher.service';
+import { FirebaseService } from '../firebase/firebase-service';
 
 @Module({
   controllers: [OrdersController],
@@ -16,6 +17,7 @@ import { PusherService } from 'src/pusher/pusher.service';
     SettingsService,
     MailService,
     PusherService,
+    FirebaseService,
   ],
 })
 export class OrdersModule {}

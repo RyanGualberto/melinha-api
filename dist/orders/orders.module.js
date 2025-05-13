@@ -15,6 +15,7 @@ const orders_controller_1 = require("./orders.controller");
 const settings_service_1 = require("../settings/settings.service");
 const mail_service_1 = require("../mail/mail.service");
 const pusher_service_1 = require("../pusher/pusher.service");
+const firebase_service_1 = require("../firebase/firebase-service");
 let OrdersModule = class OrdersModule {
 };
 exports.OrdersModule = OrdersModule;
@@ -28,6 +29,7 @@ exports.OrdersModule = OrdersModule = __decorate([
             settings_service_1.SettingsService,
             mail_service_1.MailService,
             pusher_service_1.PusherService,
+            firebase_service_1.FirebaseService,
         ],
     })
 ], OrdersModule);
