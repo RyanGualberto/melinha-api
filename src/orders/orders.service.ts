@@ -11,7 +11,7 @@ import { OrdersGateway } from './orders.gateway';
 import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
 import { PusherService } from '../pusher/pusher.service';
-import { FirebaseService } from '../firebase/firebase-service';
+import { NotificationsService } from '../notification/notification.service';
 
 @Injectable()
 export class OrdersService {
@@ -21,7 +21,7 @@ export class OrdersService {
     private readonly settingsService: SettingsService,
     private readonly mailService: MailService,
     private readonly pusherService: PusherService,
-    private readonly notificationService: FirebaseService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -120,23 +120,12 @@ export class OrdersService {
         console.error('Pusher error:', error);
       },
     );
-    const admins = await this.prismaService.user.findMany({
-      where: {
-        role: 'admin',
-      },
-      select: {
-        fcmToken: true,
-      },
-    });
-    admins.forEach((admin) => {
-      const tokens = admin.fcmToken.split(',');
-      tokens.forEach((token) => {
-        this.notificationService
-          .sendNotification(token, 'Novo Pedido', 'Chegou um novo Pedido')
-          .then(() => console.log('notificação enviada'))
-          .catch(() => console.log('erro ao enviar notificação'));
-      });
-    });
+
+    await this.notificationsService.sendPush(
+      'Novo Pedido',
+      `Pedido criado - ${order.products.length} items`,
+    );
+
     return order;
   }
 

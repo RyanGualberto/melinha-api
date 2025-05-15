@@ -17,15 +17,15 @@ const orders_gateway_1 = require("./orders.gateway");
 const settings_service_1 = require("../settings/settings.service");
 const mail_service_1 = require("../mail/mail.service");
 const pusher_service_1 = require("../pusher/pusher.service");
-const firebase_service_1 = require("../firebase/firebase-service");
+const notification_service_1 = require("../notification/notification.service");
 let OrdersService = class OrdersService {
-    constructor(prismaService, ordersGateway, settingsService, mailService, pusherService, notificationService) {
+    constructor(prismaService, ordersGateway, settingsService, mailService, pusherService, notificationsService) {
         this.prismaService = prismaService;
         this.ordersGateway = ordersGateway;
         this.settingsService = settingsService;
         this.mailService = mailService;
         this.pusherService = pusherService;
-        this.notificationService = notificationService;
+        this.notificationsService = notificationsService;
     }
     async create(createOrderDto) {
         const storeSettings = await this.settingsService.findOne();
@@ -108,23 +108,7 @@ let OrdersService = class OrdersService {
         }, (error) => {
             console.error('Pusher error:', error);
         });
-        const admins = await this.prismaService.user.findMany({
-            where: {
-                role: 'admin',
-            },
-            select: {
-                fcmToken: true,
-            },
-        });
-        admins.forEach((admin) => {
-            const tokens = admin.fcmToken.split(',');
-            tokens.forEach((token) => {
-                this.notificationService
-                    .sendNotification(token, 'Novo Pedido', 'Chegou um novo Pedido')
-                    .then(() => console.log('notificação enviada'))
-                    .catch(() => console.log('erro ao enviar notificação'));
-            });
-        });
+        await this.notificationsService.sendPush('Novo Pedido', `Pedido criado - ${order.products.length} items`);
         return order;
     }
     async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, from, to, }) {
@@ -388,6 +372,6 @@ exports.OrdersService = OrdersService = __decorate([
         settings_service_1.SettingsService,
         mail_service_1.MailService,
         pusher_service_1.PusherService,
-        firebase_service_1.FirebaseService])
+        notification_service_1.NotificationsService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

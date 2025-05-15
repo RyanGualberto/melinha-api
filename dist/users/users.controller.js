@@ -28,9 +28,6 @@ let UsersController = class UsersController {
             clientName,
         });
     }
-    async create(body, req) {
-        return await this.usersService.saveToken(body.token, req.user.id);
-    }
     async update(id, updateUserDto) {
         return await this.usersService.update(id, updateUserDto);
     }
@@ -48,16 +45,6 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AdminGuard),
-    (0, common_1.Post)(),
-    (0, common_1.HttpCode)(201),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.HttpCode)(200),

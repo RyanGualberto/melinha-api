@@ -1,6 +1,5 @@
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -22,9 +21,6 @@ export declare class UsersController {
             total: number;
         };
     }>;
-    create(body: {
-        token: string;
-    }, req: Request): Promise<void>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         firstName: string;
         lastName: string;
@@ -35,7 +31,6 @@ export declare class UsersController {
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
-        fcmToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -49,7 +44,6 @@ export declare class UsersController {
         role: string;
         resetToken: string | null;
         resetExpires: Date | null;
-        fcmToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

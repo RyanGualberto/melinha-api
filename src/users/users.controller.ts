@@ -8,13 +8,10 @@ import {
   UseGuards,
   HttpCode,
   Query,
-  Post,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AdminGuard } from '../auth/auth.guard';
-import { Request } from 'express';
 
 @UseGuards(AdminGuard)
 @Controller('users')
@@ -32,13 +29,6 @@ export class UsersController {
       perPage: Number(perPage),
       clientName,
     });
-  }
-
-  @UseGuards(AdminGuard)
-  @Post()
-  @HttpCode(201)
-  async create(@Body() body: { token: string }, @Req() req: Request) {
-    return await this.usersService.saveToken(body.token, req.user.id);
   }
 
   @Patch(':id')

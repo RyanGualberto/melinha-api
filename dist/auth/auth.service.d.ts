@@ -21,7 +21,6 @@ export declare class AuthService {
             role: string;
             resetToken: string | null;
             resetExpires: Date | null;
-            fcmToken: string | null;
             createdAt: Date;
             updatedAt: Date;
         };

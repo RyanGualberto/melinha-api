@@ -6,7 +6,7 @@ import { OrdersController } from './orders.controller';
 import { SettingsService } from '../settings/settings.service';
 import { MailService } from '../mail/mail.service';
 import { PusherService } from '../pusher/pusher.service';
-import { FirebaseService } from '../firebase/firebase-service';
+import { NotificationsService } from '../notification/notification.service';
 
 @Module({
   controllers: [OrdersController],
@@ -17,7 +17,7 @@ import { FirebaseService } from '../firebase/firebase-service';
     SettingsService,
     MailService,
     PusherService,
-    FirebaseService,
+    NotificationsService,
   ],
 })
 export class OrdersModule {}

@@ -23,6 +23,7 @@ import { join } from 'path';
 import { DashboardModule } from './dashboard/dashboard.module';
 // import { LoggerMiddleware } from './config/use-logging';
 import { CouponsModule } from './coupons/coupons.module';
+import { NotificationsModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { CouponsModule } from './coupons/coupons.module';
     OrdersModule,
     DashboardModule,
     CouponsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

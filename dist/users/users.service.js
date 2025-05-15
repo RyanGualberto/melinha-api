@@ -68,22 +68,6 @@ let UsersService = class UsersService {
         delete record.password;
         return record;
     }
-    async saveToken(token, userId) {
-        const userToken = await this.prisma.user.findFirst({
-            where: {
-                id: userId,
-            },
-        });
-        const tokenArr = userToken.fcmToken.split(',');
-        tokenArr.push(token);
-        const tokenStr = tokenArr.join(', ');
-        await this.prisma.user.update({
-            where: { id: userId },
-            data: {
-                fcmToken: tokenStr,
-            },
-        });
-    }
     async findAllPaginated({ page = 0, perPage = 10, clientName, }) {
         const skip = page * perPage;
         const users = await this.prisma.user.findMany({

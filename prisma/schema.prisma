@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PushSubscription {
+  id             String   @id @default(cuid())
+  endpoint       String   @unique
+  expirationTime String?
+  p256dh         String
+  auth           String
+  createdAt      DateTime @default(now())
+
+  @@map("push_subscriptions")
+}
+
 model User {
   id           String    @id @default(uuid())
   firstName    String
@@ -17,7 +28,6 @@ model User {
   role         String
   resetToken   String?
   resetExpires DateTime?
-  fcmToken     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   addresses    Address[]
