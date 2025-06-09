@@ -103,12 +103,18 @@ let OrdersService = class OrdersService {
             },
         });
         this.ordersGateway.server.emit('orderCreated', order);
-        await this.pusherService.trigger('orders', 'orderCreated', order).then(() => {
+        this.pusherService.trigger('orders', 'orderCreated', order).then(() => {
             console.log('Pusher triggered');
         }, (error) => {
             console.error('Pusher error:', error);
         });
-        await this.notificationsService.sendPush('Novo Pedido', `Pedido criado - ${order.products.length} items`);
+        this.notificationsService
+            .sendPush('Novo Pedido', `Pedido criado - ${order.products.length} items`)
+            .then(() => {
+            console.log('Push notification sent');
+        }, (error) => {
+            console.error('Push notification error:', error);
+        });
         return order;
     }
     async findAllPaginated({ page = 1, perPage = 10, customerName, status, deliveryMethod, paymentMethod, from, to, }) {
